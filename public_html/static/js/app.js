@@ -2,36 +2,69 @@
 
 	var player = videojs('player', {});
 	var videos = d.querySelectorAll('.j-load-video');
+
+	var sidebar = d.getElementById('sidebar');
+	var content = d.getElementById('content');
 	var sendButton = d.getElementById('send-video');
+
 	var virtual = {};
 	var current = 0;
 	var count = videos.length;
 
+	var clienHeight = w.innerHeight;
+	var scrollHeight = Math.max(
+		b.scrollHeight, document.documentElement.scrollHeight,
+		b.offsetHeight, document.documentElement.offsetHeight,
+		b.clientHeight, document.documentElement.clientHeight
+	);
+
 	player.on('ended', function(){
-		_playNext();
+		playNext();
 	});
 
 	if (count) {
-		for (var i = 0; i < count; i++)
-		{
-			var item = videos[i];
 
-			virtual[i] = {
-				video: item.dataset.video,
-				poster: item.dataset.poster
+		$(videos).each(function(index, item) {
+			var $item = $(this);
+
+			virtual[index] = {
+				offset: $item.offset().top,
+				video: $item.data('video'),
+				poster: $item.data('poster')
 			};
 
-			(function(node, index) {
+			(function(node, i) {
 				node.addEventListener('click', function(e) {
-					current = index;
-					_playItem();
+					current = i;
+					playItem();
 				});
-			})(item, i)
+			})(item, index)
 
-			if (count - 1 == i) {
-				_start();
+			if (count - 1 == index) {
+				startCycle();
 			}
-		}
+		})
+
+		// for (var i = 0; i < count; i++)
+		// {
+		// 	var item = videos[i];
+
+		// 	virtual[i] = {
+		// 		video: item.dataset.video,
+		// 		poster: item.dataset.poster
+		// 	};
+
+		// 	(function(node, index) {
+		// 		node.addEventListener('click', function(e) {
+		// 			current = index;
+		// 			playItem();
+		// 		});
+		// 	})(item, i)
+
+		// 	if (count - 1 == i) {
+		// 		startCycle();
+		// 	}
+		// }
 	}
 
 	sendButton.addEventListener('click', function(e) {
@@ -51,7 +84,7 @@
 	// 	// // How about an event listener?
 	// 	// this.on('ended', function() {
 	// 	// 	video.play();
-	// 	// 	_playNext();
+	// 	// 	playNext();
 	// 	// 	videojs.log('Awww...over so soon?!');
 	// 	// });
 	// });
@@ -64,17 +97,24 @@
 		}
 	}
 
-	function _playItem()
+	function _setActive()
+	{
+		var top = virtual[current].offset - 20;
+
+		$(sidebar).animate({'scrollTop': top}, 'medium');
+
+		videos[current].classList.add('is-active');
+	}
+
+	function playItem()
 	{
 		_clear();
-
-		console.log('current: ', current, virtual[current]);
 
 		if (typeof (virtual[current]) !== 'undefined')
 		{
 			var item = virtual[current];
 
-			videos[current].classList.add('is-active');
+			_setActive();
 
 			player.src(item.video);
 			player.poster(item.poster);
@@ -107,7 +147,7 @@
 		// ]);
 	}
 
-	function _playNext()
+	function playNext()
 	{
 		current++;
 
@@ -116,17 +156,16 @@
 			current = 0;
 		}
 
-		console.log('play_next: ', current);
-
-		_playItem();
+		playItem();
 	}
 
-	function _start()
+	function startCycle()
 	{
 		current = 0;
-		_playItem();
-		// console.log('start: ', current, virtual[current]);
+		playItem();
 	}
+
+    Modal.init();
 
 })(document, document.body, window);
 
