@@ -1,0 +1,130 @@
+* {
+	box-sizing: border-box;
+    -webkit-touch-callout: none;
+    -webkit-overflow-scrolling: touch;
+    -webkit-tap-highlight-color: transparent;
+}
+
+*:before, *:after {
+    box-sizing: border-box;
+}
+
+html {
+    quotes: "“" "”";
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+html, body {
+	height: 100%;
+    overscroll-behavior-y: none;
+}
+
+.page {
+	margin: 0;
+	color: #202020;
+	font-size: 16px;
+    min-width: 320px;
+    font-kerning: none;
+    line-height: 1.42857143;
+    background-color: #fff;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.page.modal-open {
+    position: fixed;
+    width: 100%;
+}
+
+body, input, textarea, select, button {
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'kern','onum','liga';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-smoothing: antialiased;
+    text-align: left;
+}
+
+.layout-wrapper {
+	min-height: 100%;
+}
+
+.layout-header {}
+.layout-header__wrapper {}
+
+.layout-wrapper__container {
+	min-height: 100vh;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	-ms-align-items: stretch;
+	align-items: stretch;
+	justify-content: space-between;
+}
+
+.sidebar {
+	flex: 0 0 20%;
+	padding: 20px;
+	height: 100vh;
+	overflow: auto;
+	background-color: #fdd;
+}
+
+.content {
+	flex: 0 0 80%;
+	padding: 20px;
+	background-color: #eee;
+}
+
+.video-js {
+	width: 100%;
+	height: calc(100vh - 110px);
+	margin-bottom: 20px;
+	border: 1px solid red;
+}
+
+.video-item {
+	width: 100%;
+	font-size: 0;
+	border: 0;
+	outline: 0;
+	display: block;
+	cursor: pointer;
+	padding: 0;
+	background-color: #fff;
+}
+
+.video-item:not(:last-child) {
+	margin-bottom: 20px;
+}
+
+.video-item.is-active {
+	box-shadow: 0 0 0 5px yellow;
+}
+
+.video-item__image {
+	max-width: 100%;
+	height: auto;
+}
+
+.video-item__name {
+	font-size: 13px;
+	line-height: 1;
+	text-align: center;
+	border: 1px solid red;
+}
+
+.button {
+	color: #fff;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 500;
+	padding: 12px 25px;
+	display: inline-block;
+	background-color: #000;
+}

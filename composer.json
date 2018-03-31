@@ -1,0 +1,38 @@
+{
+    "name": "lnked/video.dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Celebro dev",
+            "email": "ed.proff@gmail.com"
+        }
+    ],
+    "require": {
+        "intervention/image": "^2.4",
+        "lnked/pubsub": "dev-master",
+        "php-ffmpeg/php-ffmpeg": "^0.11.1",
+        "phpfastcache/phpfastcache": "^6.1",
+        "swiftmailer/swiftmailer": "^6.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "7.1"
+        },
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "vendor-dir": "public_html/core/vendors"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acme\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Acme\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
