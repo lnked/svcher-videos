@@ -1,0 +1,274 @@
+* {
+	box-sizing: border-box;
+    -webkit-touch-callout: none;
+    -webkit-overflow-scrolling: touch;
+    -webkit-tap-highlight-color: transparent;
+}
+
+*:before, *:after {
+    box-sizing: border-box;
+}
+
+html {
+    quotes: "“" "”";
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+html, body {
+	height: 100%;
+    overscroll-behavior-y: none;
+}
+
+.page {
+    margin: 0;
+    color: #202020;
+    font-size: 16px;
+    min-width: 320px;
+    font-kerning: none;
+    font-family: Roboto, Arial, sans-serif;
+    line-height: 1.42857143;
+    background-color: #fff;
+}
+
+body, input, textarea, select, button {
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'kern','onum','liga';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-smoothing: antialiased;
+    text-align: left;
+}
+
+.input-file {
+    padding: 5px;
+    display: block;
+    border: 1px solid;
+    border-color: #cdcdcd #c9c9c9 #e7e7e7 #d6d6d6;
+}
+
+.input,
+.select,
+.textarea {
+    width: 100%;
+    height: 34px;
+    font-size: 14px;
+    padding: 0 10px;
+    color: #333;
+    border: 1px solid;
+    border-color: #cdcdcd #c9c9c9 #e7e7e7 #d6d6d6;
+    -webkit-box-shadow: inset 0 1px 1px #e8e8e8;
+    box-shadow: inset 0 1px 1px #e8e8e8;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.textarea {
+    padding: 10px;
+    max-width: 100%;
+    min-width: 100%;
+    min-height: 100px;
+    max-height: 200px;
+    line-height: 16px;
+    resize: vertical;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+    border-color: #608bd5;
+    outline: 2px solid #6ec6f8;
+    -moz-outline-radius: 2px;
+    -webkit-outline-radius: 2px;
+}
+
+.input.error,
+.select.error,
+.textarea.error {
+    border-color: #fd0000;
+    outline: 2px solid #f35858;
+    -moz-outline-radius: 2px;
+    -webkit-outline-radius: 2px;
+}
+
+.label {
+    display: block;
+}
+
+.label:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+.label__name {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.ui-select {
+    width:100%;
+    height:38px;
+    outline:0;
+    color:#4a4a4a;
+    padding:0 10px;
+    font-size:14px;
+    font-size:1.4rem;
+    position:relative;
+    border:1px solid #979797;
+    background-color:#fff;
+    background:url(../images/icon/select-arrow.svg) -webkit-calc(100% - 9px) 50% no-repeat;
+    background:url(../images/icon/select-arrow.svg) calc(100% - 9px) 50% no-repeat;
+    -webkit-background-size:8px 4px;
+    background-size:8px 4px
+}
+.ui-select--rounded {
+    border-radius:4px
+}
+.ui-select--top-bottom {
+    border-radius:4px;
+    background-image:url(../images/icon/arrow-top-bottom.svg);
+    -webkit-background-size:10px 15px;
+    background-size:10px 15px
+}
+.ui-select:focus {
+    -webkit-box-shadow:0 0 0 1px #8fbf00;
+    box-shadow:0 0 0 1px #8fbf00
+}
+.ui-select.is-error,.ui-select:invalid {
+    border-color:#ff5050
+}
+.ui-select.is-error:focus,.ui-select:invalid:focus {
+    -webkit-box-shadow:0 0 0 1px #ff5050;
+    box-shadow:0 0 0 1px #ff5050
+}
+
+.ui-radio {
+    font-size:0;
+    line-height:1;
+    cursor:pointer;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    position:relative;
+    display:inline-block
+}
+
+.ui-radio + .ui-radio {
+    margin-left: 15px;
+}
+
+.ui-radio--box {
+    width:100%;
+    height:89px;
+    padding:10px 20px;
+    position:relative;
+    display:-webkit-box;
+    display:-webkit-flex;
+    display:-ms-flexbox;
+    display:flex;
+    -webkit-box-align:center;
+    -webkit-align-items:center;
+    -ms-flex-align:center;
+    align-items:center;
+    -webkit-box-pack:start;
+    -webkit-justify-content:flex-start;
+    -ms-flex-pack:start;
+    justify-content:flex-start
+}
+.ui-radio__input {
+    width:0;
+    height:0;
+    left:0;
+    top:0;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    opacity:0;
+    position:absolute
+}
+.ui-radio__visible {
+    width:18px;
+    height:18px;
+    outline:0;
+    cursor:pointer;
+    overflow:hidden;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    border-radius:50%;
+    position:relative;
+    display:inline-block;
+    vertical-align:middle;
+    border:1px solid #a8a8a8;
+    background-color:#fff
+}
+.ui-radio__visible:before {
+    width:8px;
+    height:8px;
+    content:"";
+    display:none;
+    position:absolute;
+    pointer-events:none;
+    left:50%;
+    top:50%;
+    border-radius:50%;
+    margin-left:-4px;
+    margin-top:-4px;
+    background-image:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#cdd3d7));
+    background-image:-webkit-linear-gradient(top,#fff 0,#cdd3d7 100%);
+    background-image:linear-gradient(180deg,#fff 0,#cdd3d7 100%)
+}
+.ui-radio__only-desktop {
+    text-transform:capitalize
+}
+.ui-radio__box {
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index:-1;
+    background-color:#fff;
+    border:1px solid #bebebe;
+    -webkit-transition:background-color .15s ease,border-color .15s ease;
+    transition:background-color .15s ease,border-color .15s ease
+}
+.ui-radio__input:checked+.ui-radio__visible {
+    border-color:#679421;
+    background-color:#679421
+}
+.ui-radio__input:checked+.ui-radio__visible:before {
+    display:block
+}
+.ui-radio__input:checked+.ui-radio__visible+.ui-radio__box {
+    border-color:#8fbf00;
+    background-color:#8fbf00;
+    background-color:rgba(143,191,0,.1)
+}
+.ui-radio__input:disabled+.ui-radio__visible {
+    cursor:default;
+    border-color:#d5d5d5;
+    background-color:#f6f6f6
+}
+.ui-radio__input:disabled+.ui-radio__visible:before {
+    border-color:#d5d5d5
+}
+.ui-radio__label {
+    color:#2f2f2f;
+    font-size:14px;
+    line-height:16px;
+    font-weight:400;
+    margin-left:5px;
+    letter-spacing:.01ex
+}
+.ui-radio__label,.ui-radio__label__middle {
+    display:inline-block;
+    vertical-align:middle
+}
+.ui-radio__label__middle {
+    margin-top:-1px;
+    line-height:1.3
+}

@@ -10,6 +10,7 @@ class App
     protected $domain = null;
     protected $request = null;
     protected $backuri = null;
+    protected $is_admin = false;
 
 	public function __construct()
 	{
@@ -19,6 +20,11 @@ class App
         $this->backuri = base64_encode($this->request);
         $this->url = current(explode('?', $this->request));
         $this->path = preg_split('/\/+/', $this->url, -1, PREG_SPLIT_NO_EMPTY);
+
+        if (isset($this->path[0]) && $this->path[0] == 'admin')
+        {
+        	$this->is_admin = true;
+        }
 	}
 
 	private function render()
@@ -29,7 +35,9 @@ class App
 
 		// $this->viewer->display($this->pattern);
 
-		require PATH_TEMPLATE.DS.'base.phtml';
+		$template = $this->is_admin ? 'admin' : 'base';
+
+		require PATH_TEMPLATE.DS.$template.'.phtml';
 	}
 
 	public function terminate()

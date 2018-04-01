@@ -5,6 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
+	<link rel="stylesheet" href="/static/css/base.css">
 	<link rel="stylesheet" href="/static/css/main.css">
 	<link rel="stylesheet" href="/static/css/video-js.min.css">
 
@@ -26,7 +27,7 @@
 
 	<template id="tmpl-send-message">
 		<div class="modal" aria-hidden="true" tabindex="-1" id="send-message">
-			<div class="modal__dialog">
+			<form action="/api/send-message" method="POST" class="modal__dialog j-ajax-form">
 				<button type="button" class="modal__close j-close-modal" data-target="#send-message"></button>
 
 				<div class="modal__header">
@@ -36,17 +37,17 @@
 				<div class="modal__body">
 					<label class="label">
 						<span class="label__name">Имя</span>
-						<input name="" class="input">
+						<input name="name" class="input">
 					</label>
 
 					<label class="label">
 						<span class="label__name">Номер телефона</span>
-						<input name="" class="input">
+						<input name="phone" class="input">
 					</label>
 
 					<label class="label">
 						<span class="label__name">Электронная почта</span>
-						<input name="" class="input">
+						<input name="email" class="input">
 					</label>
 				</div>
 
@@ -54,7 +55,7 @@
 					<button type="reset" class="button-reset j-close-modal">Отменить</button>
 					<button type="submit" class="button-submit">Отправить</button>
 				</div>
-			</div>
+			</form>
 		</div>
 	</template>
 

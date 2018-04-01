@@ -11,7 +11,6 @@
 	var current = 0;
 	var count = videos.length;
 
-	var clienHeight = w.innerHeight;
 	var scrollHeight = Math.max(
 		b.scrollHeight, document.documentElement.scrollHeight,
 		b.offsetHeight, document.documentElement.offsetHeight,
@@ -23,7 +22,6 @@
 	});
 
 	if (count) {
-
 		$(videos).each(function(index, item) {
 			var $item = $(this);
 
@@ -43,53 +41,14 @@
 			if (count - 1 == index) {
 				startCycle();
 			}
-		})
-
-		// for (var i = 0; i < count; i++)
-		// {
-		// 	var item = videos[i];
-
-		// 	virtual[i] = {
-		// 		video: item.dataset.video,
-		// 		poster: item.dataset.poster
-		// 	};
-
-		// 	(function(node, index) {
-		// 		node.addEventListener('click', function(e) {
-		// 			current = index;
-		// 			playItem();
-		// 		});
-		// 	})(item, i)
-
-		// 	if (count - 1 == i) {
-		// 		startCycle();
-		// 	}
-		// }
+		});
 	}
 
 	sendButton.addEventListener('click', function(e) {
 		player.pause();
 	});
 
-	// var options = {};
-
-	// var player = videojs('player', options, function onPlayerReady() {
-	// 	videojs.log('Your player is ready!');
-
-	// 	// var video = this;
-
-	// 	// // In this context, `this` is the player that was created by Video.js.
-	// 	// video.play();
-
-	// 	// // How about an event listener?
-	// 	// this.on('ended', function() {
-	// 	// 	video.play();
-	// 	// 	playNext();
-	// 	// 	videojs.log('Awww...over so soon?!');
-	// 	// });
-	// });
-
-	function _clear()
+	function clearActive()
 	{
 		for (var i = 0; i < videos.length; i++)
 		{
@@ -97,54 +56,31 @@
 		}
 	}
 
-	function _setActive()
+	function setActive(callback)
 	{
 		var top = virtual[current].offset - 20;
 
 		$(sidebar).animate({'scrollTop': top}, 'medium');
 
 		videos[current].classList.add('is-active');
+
+		callback();
 	}
 
 	function playItem()
 	{
-		_clear();
+		clearActive();
 
 		if (typeof (virtual[current]) !== 'undefined')
 		{
 			var item = virtual[current];
 
-			_setActive();
-
-			player.src(item.video);
-			player.poster(item.poster);
-			player.play();
+			setActive(function() {
+				player.src(item.video);
+				player.poster(item.poster);
+				player.play();
+			});
 		}
-
-		// myPlayer.src({
-		//    "src":"http://mysite.com/video/video.mp4",
-		//    "type":"video/mp4", 
-		//    "poster":"http://mysite.com/img/poster.jpg"
-		// });
-
-
-		// var player = videojs('my_player_id');
-
-		// // Get/set poster:
-		// console.log(player.poster());
-		// player.poster('//example.com/poster.jpg');
-
-		// // Get source:
-		// console.log(player.currentSrc());
-
-		// // Update source:
-		// player.src({src: '//example.com/video.mp4', type: 'video/mp4'});
-
-		// // Multiple sources:
-		// player.src([
-		// {src: '//example.com/video.m3u8', type: 'application/x-mpegURL'},
-		// {src: '//example.com/video.mp4', type: 'video/mp4'}
-		// ]);
 	}
 
 	function playNext()
@@ -167,102 +103,119 @@
 
     Modal.init();
 
-})(document, document.body, window);
+    function validation(form, errors)
+    {
+        form.find('.error').removeClass('error');
 
-// var myplayer;
-// var playCount = 0;
-// videojs("example_video_1").ready(function(){
+        var fieldName, field;
 
-// 	  myplayer = this;
+        setTimeout(function() {
+            if (typeof errors !== 'undefined' && errors !== '')
+            {
+                for (fieldName in errors)
+                {
+                    if (form.find('input[name="'+fieldName+'"]').length > 0)
+                    {
+                        field = form.find('input[name="'+fieldName+'"]');
+                    }
 
-// 	  // EXAMPLE: Start playing the video.
-// 	  //myplayer.play();
-// 	  myplayer.on("play", function(){
-// 		playCount++;
-//         $("#count").text(playCount)
-// 	  });
+                    if (form.find('select[name="'+fieldName+'"]').length > 0)
+                    {
+                        field = form.find('select[name="'+fieldName+'"]');
+                    }
 
-// });
-// $("#test").click(function (){  
-//     myplayer.pause();
-//     myplayer.play();
-// });
+                    if (form.find('textarea[name="'+fieldName+'"]').length > 0)
+                    {
+                        field = form.find('textarea[name="'+fieldName+'"]');
+                    }
 
-function subscribe(url) {
-	var xhr = new XMLHttpRequest();
+                    field.addClass('error');
+                }
+            }
+        }, 16);
+    }
 
-	xhr.onreadystatechange = function() {
-		if (this.readyState != 4) return;
+    function formHandler(form, response) {
+    	console.log(response);
 
-		if (this.status == 200) {
-			onMessage(this.responseText);
-		} else {
-			onError(this);
+        if (response.status)
+        {
+        	if (response.hasOwnProperty('redirect_url'))
+            {
+                window.location.href = response.redirect_url;
+            }
+        }
+        else if (typeof response.errors !== 'undefined')
+        {
+        	var errors, error_message;
+
+            if (typeof response.errors !== 'undefined')
+            {
+                errors = response.errors;
+            }
+
+            console.log(form, errors);
+
+            validation(form, errors);
+        }
+
+        if (response.hasOwnProperty('message'))
+        {
+            console.log(response.title, response.message);
+        }
+    }
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'JSON',
+        contentType: false
+    });
+
+    $('body').on('submit', '.j-ajax-form', function(e) {
+    	e.preventDefault();
+
+    	var form    = $(this),
+		    action  = form.attr('action'),
+		    method  = (form.attr('method') || 'post'),
+		    data    = !!window.FormData ? new FormData(form[0]) : form.serialize();
+
+		if (form.data('is-busy')) {
+		    return;
 		}
 
-		subscribe(url);
-	}
+		form.data('is-busy', true);
+		form.addClass('is-busy');
 
-	xhr.open("GET", url, true);
-	xhr.send();
-}
+    	$.ajax({
+            url: action,
+            type: method,
+            data: data,
+            processData: method.toLowerCase() == 'get',
+            success: function(response)
+		    {
+		    	if (response.status)
+		        {
+		        	form.find('.error').removeClass('error');
+		    		form.get(0).reset();
+		    	}
 
-// Посылка запросов -- обычными XHR POST
-function PublishForm(form, url) {
+		    	formHandler(form, response);
 
-  function sendMessage(message) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
-    // просто отсылаю сообщение "как есть" без кодировки
-    // если бы было много данных, то нужно было бы отослать JSON из объекта с ними
-    // или закодировать их как-то иначе
-    xhr.send(message);
-  }
+		        form.data('is-busy', false);
+		        form.removeClass('is-busy');
+		    },
+            error: function(response)
+		    {
+		        formHandler(form, response.responseJSON);
 
-  form.onsubmit = function() {
-    var message = form.message.value;
-    if (message) {
-      form.message.value = '';
-      sendMessage(message);
-    }
-    return false;
-  };
-}
+		        form.data('is-busy', false);
+		        form.removeClass('is-busy');
+		    }
+        });
 
-// Получение сообщений, COMET
-function SubscribePane(elem, url) {
+    	return false;
+    });
 
-  function showMessage(message) {
-    var messageElem = document.createElement('div');
-    messageElem.appendChild(document.createTextNode(message));
-    elem.appendChild(messageElem);
-  }
-
-  function subscribe() {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (this.readyState != 4) return;
-
-      if (this.status == 200) {
-        if (this.responseText) {
-          // сервер может закрыть соединение без ответа при перезагрузке
-          showMessage(this.responseText);
-        }
-        subscribe();
-        return;
-      }
-
-      if (this.status != 502) {
-        // 502 - прокси ждал слишком долго, надо пересоединиться, это не ошибка
-        showMessage(this.statusText); // показать ошибку
-      }
-
-      setTimeout(subscribe, 1000); // попробовать ещё раз через 1 сек
-    }
-    xhr.open("GET", url, true);
-    xhr.send();
-  }
-
-  subscribe();
-
-}
+})(document, document.body, window);

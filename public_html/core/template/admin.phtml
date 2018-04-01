@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+	<link rel="stylesheet" href="/static/css/base.css">
+	<link rel="stylesheet" href="/static/css/admin.css">
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+	<link rel="manifest" href="/static/favicon/site.webmanifest">
+	<link rel="mask-icon" href="/static/favicon/safari-pinned-tab.svg" color="#ff0000">
+	<link rel="shortcut icon" href="/static/favicon/favicon.ico">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-config" content="/static/favicon/browserconfig.xml">
+	<meta name="theme-color" content="#ffffff">
+
+	<title>VIDEO MANAGER</title>
+</head>
+<body class="page">
+
+<div class="layout-wrapper">
+
+    <div class="layout-wrapper__container">
+
+		<!-- Интерфейс Администратора, при нажатии на Выйти необходимо проверить сохранили или нет. -->
+
+        <div class="container">
+        	<main class="content" id="content">
+
+				<label class="label">
+					<span class="label__name">Наименование мероприятия</span>
+					<input name="" class="input" placeholder="Введите название..." value="Наименование Мероприятия">
+				</label>
+
+				<label class="label">
+					<!-- JPG/PNG -->
+					<span class="label__name">Логотип</span>
+					<input type="file" name="" class="input-file" accept="image/x-png,image/gif,image/jpeg">
+				</label>
+
+				<label class="label">
+					<span class="label__name">Адрес папки с готовыми проектами</span>
+					<!-- <input name="" class="input" placeholder="Путь к папке..."> -->
+					<input type="file" id="flup" onchange="getfolder(event)" webkitdirectory mozdirectory msdirectory odirectory directory multiple>
+				</label>
+
+				<label class="label">
+					<span class="label__name">Адрес папки с фото</span>
+					<!-- <input name="" class="input" placeholder="Введите название..."> -->
+					<input type="file" id="flup" onchange="getfolder(event)" webkitdirectory mozdirectory msdirectory odirectory directory multiple>
+				</label>
+
+				<label class="label">
+					<span class="label__name">Режим работы GIF / Video</span>
+
+					<label class="ui-radio ui-radio--inline">
+                        <input type="radio" name="radio" value="" class="ui-radio__input" checked="">
+                        <span class="ui-radio__visible" role="radio" aria-checked="true" tabindex="0"></span>
+                        <span class="ui-radio__label">
+                            <span class="ui-radio__label__middle">GIF</span>
+                        </span>
+                    </label>
+
+					<label class="ui-radio ui-radio--inline">
+                        <input type="radio" name="radio" value="" class="ui-radio__input" checked="">
+                        <span class="ui-radio__visible" role="radio" aria-checked="true" tabindex="0"></span>
+                        <span class="ui-radio__label">
+                            <span class="ui-radio__label__middle">Video</span>
+                        </span>
+                    </label>
+				</label>
+
+				<label class="label">
+					<span class="label__name">Пароль</span>
+					<input name="" class="input" placeholder="Введите название...">
+				</label>
+
+				<label class="label">
+					<span class="label__name">Время просмотра, сек	30 - 600</span>
+					<input name="" class="input" placeholder="Введите название...">
+				</label>
+
+				<h2>Параметры почты</h2>
+
+				<label class="label">
+					<span class="label__name">Кнопка теста</span>
+					<input name="" class="input" placeholder="Введите название..." value="Отправить на почту">
+				</label>
+
+				<label class="label">
+					<span class="label__name">Адрес отправителя</span>
+					<input name="" class="input" placeholder="Введите название..." value="time@softkor.ru">
+				</label>
+
+				<label class="label">
+					<span class="label__name">Пароль</span>
+					<input name="" class="input" placeholder="Введите название..." value="1234567890">
+				</label>
+
+				<label class="label">
+					<span class="label__name">SMTP</span>
+					<input name="" class="input" placeholder="Введите название..." value="smtp.softkor.ru">
+				</label>
+
+				<label class="label">
+					<span class="label__name">Port</span>
+					<input name="" class="input" placeholder="Введите название..." value="465">
+				</label>
+
+				<label class="label">
+					<span class="label__name">Подпись в письме</span>
+					<textarea name="" id="" cols="30" rows="10" class="textarea">С уважением, Администрация мероприятия</textarea>
+				</label>
+
+				<button type="submit" class="button-submit">Сохранить</button>
+
+	        </main>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/admin.js"></script>
+
+</body>
+</html>
