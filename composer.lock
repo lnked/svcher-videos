@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e51f32599cc454a4f3b8e64a5d12167",
+    "content-hash": "ccb04fd299f0f751cb76aa757e29b689",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -473,6 +473,54 @@
                 "subscribe"
             ],
             "time": "2017-10-18T08:41:13+00:00"
+        },
+        {
+            "name": "lnked/q",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lnked/Q.git",
+                "reference": "22e159461b5b4bca29bc1a2c7e1f034ee3a599a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lnked/Q/zipball/22e159461b5b4bca29bc1a2c7e1f034ee3a599a8",
+                "reference": "22e159461b5b4bca29bc1a2c7e1f034ee3a599a8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Q.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "im4LF",
+                    "homepage": "https://github.com/im4LF/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "ed",
+                    "email": "ed.proff@gmail.com",
+                    "homepage": "https://github.com/lnked/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "a query builder library for PHP",
+            "homepage": "http://github.com/lnked/Q",
+            "keywords": [
+                "mysql",
+                "query builder"
+            ],
+            "time": "2017-11-10T22:58:41+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1121,7 +1169,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "lnked/pubsub": 20
+        "lnked/pubsub": 20,
+        "lnked/q": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
