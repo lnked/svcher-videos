@@ -24,12 +24,30 @@ function _scandir($source, $response = [])
         		{
         			$type = '';
 
+                    if ($file == 'images' && is_dir($dir.DS.$file))
+                    {
+                        $images = _scan($dir.DS.$file);
+
+                        foreach ($images as $image)
+                        {
+                            if (is_image($image))
+                            {
+                                $explored->poster = $path.DS.$file.DS.$image;
+                                $explored->preview = $path.DS.$file.DS.$image;
+                            }
+                        }
+                    }
+
         			if (is_video($file)) {
         				$type = 'video';
         			}
 
-        			if (is_image($file)) {
-        				$type = 'poster';
+                    if (is_image($file)) {
+                        $type = 'poster';
+                    }
+
+        			if (is_gif($file)) {
+        				$type = 'gif';
         			}
 
         			if ($type) {
@@ -42,8 +60,10 @@ function _scandir($source, $response = [])
         			}
         		}
 
-        		// exit(__($explored));
-        		$response[$name] = $explored;
+                if (isset($explored->video)) {
+                    // exit(__('explored: ', $explored));
+                    $response[$name] = $explored;
+                }
         	}
         }
 

@@ -13,11 +13,17 @@ function is_email($email)
 function is_image($file)
 {
 	$extension = pathinfo($file, PATHINFO_EXTENSION);
-	return in_array($extension, ['jpg', 'jpeg', 'png', 'gif']);
+	return in_array($extension, ['jpg', 'jpeg', 'png']);
 }
 
 function is_video($file)
 {
 	$extension = pathinfo($file, PATHINFO_EXTENSION);
 	return in_array($extension, ['avi', 'mp4']);
+}
+
+function is_gif($file)
+{
+	$extension = pathinfo($file, PATHINFO_EXTENSION);
+	return in_array($extension, ['gif']);
 }
