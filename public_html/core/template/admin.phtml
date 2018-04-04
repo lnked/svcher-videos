@@ -24,105 +24,152 @@
 
 <div class="layout-wrapper">
 
+	<?php if (empty($this->userData)): ?>
+		<div class="login">
+			<form action="" method="POST" class="login__form">
+				<input type="hidden" name="action" value="auth-form">
+
+				<label class="label">
+					<span class="label__name">Логин:</span>
+					<input name="login" class="input" placeholder="Введите логин..." autocomplete="off">
+				</label>
+
+				<label class="label">
+					<span class="label__name">Пароль:</span>
+					<input name="password" type="password" class="input" placeholder="Введите пароль..." autocomplete="off">
+				</label>
+
+				<button class="login__button">Авторизоваться</button>
+
+			</form>
+		</div>
+	<?php else: ?>
     <div class="layout-wrapper__container">
+
+		<header class="header">
+			<div class="header__wrapper">
+				<div class="header__title">Администрирование</div>
+				<a href="/admin/logout" class="button-logout">Выйти</a>
+			</div>
+		</header>
 
 		<!-- Интерфейс Администратора, при нажатии на Выйти необходимо проверить сохранили или нет. -->
 
         <div class="container">
         	<main class="content" id="content">
+				<form action="" method="POST" enctype="multipart/form-data">
+					<label class="label">
+						<span class="label__name">Наименование мероприятия</span>
+						<input name="event_name" class="input" placeholder="Введите название..." value="<?= $this->params['event_name']; ?>">
+					</label>
 
-				<label class="label">
-					<span class="label__name">Наименование мероприятия</span>
-					<input name="" class="input" placeholder="Введите название..." value="Наименование Мероприятия">
-				</label>
+					<div class="label">
+						<!-- JPG/PNG -->
+						<span class="label__name">Логотип</span>
 
-				<label class="label">
-					<!-- JPG/PNG -->
-					<span class="label__name">Логотип</span>
-					<input type="file" name="" class="input-file" accept="image/x-png,image/gif,image/jpeg">
-				</label>
+						<input type="file" name="logo" class="input-file<?php if (!empty($this->params['logo'])) { echo ' input-hidden'; } ?>" accept="image/x-png,image/jpeg">
 
-				<label class="label">
-					<span class="label__name">Адрес папки с готовыми проектами</span>
-					<!-- <input name="" class="input" placeholder="Путь к папке..."> -->
-					<input type="file" id="flup" onchange="getfolder(event)" webkitdirectory mozdirectory msdirectory odirectory directory multiple>
-				</label>
+						<?php if (!empty($this->params['logo'])): ?>
+							<span class="label__logo">
+								<img src="<?= $this->params['logo']; ?>" alt="">
+								<button type="button" id="button-remove-logo">удалить</button>
+							</span>
+						<?php endif; ?>
+					</div>
 
-				<label class="label">
-					<span class="label__name">Адрес папки с фото</span>
-					<!-- <input name="" class="input" placeholder="Введите название..."> -->
-					<input type="file" id="flup" onchange="getfolder(event)" webkitdirectory mozdirectory msdirectory odirectory directory multiple>
-				</label>
+					<label class="label">
+						<span class="label__name">Режим работы</span>
 
-				<label class="label">
-					<span class="label__name">Режим работы GIF / Video</span>
+						<?php $mode = !empty($this->params['mode']) ? $this->params['mode'] : 'video'; ?>
 
-					<label class="ui-radio ui-radio--inline">
-                        <input type="radio" name="radio" value="" class="ui-radio__input" checked="">
-                        <span class="ui-radio__visible" role="radio" aria-checked="true" tabindex="0"></span>
-                        <span class="ui-radio__label">
-                            <span class="ui-radio__label__middle">GIF</span>
-                        </span>
-                    </label>
+						<label class="ui-radio ui-radio--inline">
+	                        <input type="radio" name="mode" value="gif" class="ui-radio__input"<?php if ($mode === 'gif') { ?> checked<?php } ?>>
+	                        <span class="ui-radio__visible" role="radio" aria-checked="true" tabindex="0"></span>
+	                        <span class="ui-radio__label">
+	                            <span class="ui-radio__label__middle">GIF</span>
+	                        </span>
+	                    </label>
 
-					<label class="ui-radio ui-radio--inline">
-                        <input type="radio" name="radio" value="" class="ui-radio__input" checked="">
-                        <span class="ui-radio__visible" role="radio" aria-checked="true" tabindex="0"></span>
-                        <span class="ui-radio__label">
-                            <span class="ui-radio__label__middle">Video</span>
-                        </span>
-                    </label>
-				</label>
+						<label class="ui-radio ui-radio--inline">
+	                        <input type="radio" name="mode" value="video" class="ui-radio__input"<?php if ($mode === 'video') { ?> checked<?php } ?>>
+	                        <span class="ui-radio__visible" role="radio" aria-checked="true" tabindex="0"></span>
+	                        <span class="ui-radio__label">
+	                            <span class="ui-radio__label__middle">Video</span>
+	                        </span>
+	                    </label>
+					</label>
 
-				<label class="label">
-					<span class="label__name">Пароль</span>
-					<input name="" class="input" placeholder="Введите название...">
-				</label>
+					<label class="label">
+						<span class="label__name">Время просмотра, сек<!-- 30 - 600 --></span>
+						<input name="time" class="input input--number" placeholder="Введите время в секундах..." value="<?= $this->params['time']; ?>">
+					</label>
 
-				<label class="label">
-					<span class="label__name">Время просмотра, сек	30 - 600</span>
-					<input name="" class="input" placeholder="Введите название...">
-				</label>
+					<label class="label">
+						<span class="label__name">Адрес папки с готовыми проектами</span>
+						<input name="pathname" class="input" placeholder="Путь к папке..." value="<?= $this->params['pathname']; ?>">
+					</label>
 
-				<h2>Параметры почты</h2>
+					<!--
+					<label class="label">
+						<span class="label__name">Адрес папки с фото</span>
+						<input name="" class="input" placeholder="Введите название...">
+					</label>
+					-->
 
-				<label class="label">
-					<span class="label__name">Кнопка теста</span>
-					<input name="" class="input" placeholder="Введите название..." value="Отправить на почту">
-				</label>
+					<h2>Параметры входа в админку</h2>
 
-				<label class="label">
-					<span class="label__name">Адрес отправителя</span>
-					<input name="" class="input" placeholder="Введите название..." value="timefreeze23@softkor.ru">
-				</label>
+					<label class="label">
+						<span class="label__name">Логин</span>
+						<input name="login" class="input input--password" placeholder="Введите логин..." value="<?= $this->params['login']; ?>">
+					</label>
 
-				<label class="label">
-					<span class="label__name">Пароль</span>
-					<input name="" class="input" placeholder="Введите название..." value="153426rhfy">
-				</label>
+					<label class="label">
+						<span class="label__name">Пароль</span>
+						<input name="password" class="input input--password" placeholder="Введите пароль..." value="<?= $this->params['password']; ?>">
+					</label>
 
-				<label class="label">
-					<span class="label__name">SMTP</span>
-					<input name="" class="input" placeholder="Введите название..." value="smtp.mail.ru">
-				</label>
+					<h2>Параметры почты</h2>
 
-				<label class="label">
-					<span class="label__name">Port</span>
-					<input name="" class="input" placeholder="Введите название..." value="465">
-				</label>
+					<label class="label">
+						<span class="label__name">Кнопка теста</span>
+						<input name="send_button" class="input" placeholder="Введите текст кнопки..." value="<?= $this->params['send_button']; ?>">
+					</label>
 
-				<label class="label">
-					<span class="label__name">Подпись в письме</span>
-					<textarea name="" id="" cols="30" rows="10" class="textarea">С уважением, Администрация мероприятия</textarea>
-				</label>
+					<label class="label">
+						<span class="label__name">Адрес отправителя</span>
+						<input name="send_email" class="input" placeholder="Введите ардес с которого будет идти отправка..." value="<?= $this->params['send_email']; ?>">
+					</label>
 
-				<button type="submit" class="button-submit">Сохранить</button>
+					<label class="label">
+						<span class="label__name">Пароль</span>
+						<input name="send_password" class="input input--password" placeholder="Введите пароль для почты..." value="<?= $this->params['send_password']; ?>">
+					</label>
 
+					<label class="label">
+						<span class="label__name">SMTP</span>
+						<input name="send_server" class="input input--short" placeholder="Введите сервер для отправки почты..." value="<?= $this->params['send_server']; ?>">
+					</label>
+
+					<label class="label">
+						<span class="label__name">Port</span>
+						<input name="send_port" class="input input--number" placeholder="Введите порт отправки почты..." value="<?= $this->params['send_port']; ?>">
+					</label>
+
+					<label class="label">
+						<span class="label__name">Подпись в письме</span>
+						<textarea name="send_signature" id="" cols="30" rows="10" class="textarea"><?= $this->params['send_signature']; ?></textarea>
+					</label>
+
+					<?php /*
+					*/ ?>
+
+					<button type="submit" class="button-submit">Сохранить</button>
+				</form>
 	        </main>
         </div>
 
     </div>
-
+   <?php endif; ?>
 </div>
 
 <script src="/static/js/jquery.min.js"></script>

@@ -14,8 +14,33 @@ class Api
         $this->action = $this->prepare($_GET['_d']);
     }
 
+    public function loadData()
+    {
+    }
+
+    public function removeLogo()
+    {
+        $logo = Q("SELECT `value` FROM `settings` WHERE `system` LIKE ?s LIMIT 1", [
+            'logo'
+        ])->row('value');
+
+        unlink(PATH_ROOT.$logo);
+
+        Q("DELETE FROM `settings` WHERE `system` LIKE ?s LIMIT 1", [
+            'logo'
+        ]);
+
+        $this->status = true;
+    }
+
     public function sendMessage()
     {
+        $settings = Q("SELECT `system`, `value` FROM `settings` WHERE `system` IN (?ls)", [
+            'logo', 'mode', 'event_name', 'send_email', 'send_password', 'send_server', 'send_port', 'send_signature'
+        ])->all();
+
+        exit(__($settings));
+
         $errors = [];
 
         $required = [

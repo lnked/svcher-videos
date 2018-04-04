@@ -18,7 +18,6 @@ define('DB_BASE', 'video');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');
 define('DB_PORT', '3306');
-define('DB_PREF', 'db');
 
 ini_set('display_errors', strval(intval(DEV_MODE)));
 ini_set('display_startup_errors', strval(intval(DEV_MODE)));
@@ -50,4 +49,4 @@ if (extension_loaded('zlib'))
 require PATH_CORE.DS.'bootstrap'.DS.'autoload.php';
 
 # Connect database
-// QF('mysqli://'.DB_USER.':'.DB_PASS.'@'.DB_HOST.':'.DB_PORT.'/'.DB_BASE.'?encoding=utf8')->connect()->alias('default')->tablePrefix(DB_PREF);
+QF('mysqli://'.DB_USER.':'.DB_PASS.'@'.DB_HOST.':'.DB_PORT.'/'.DB_BASE.'?encoding=utf8')->connect()->alias('default');

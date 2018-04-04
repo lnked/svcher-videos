@@ -74,20 +74,24 @@
         	<header class="header">
 
         		<div class="header__event">
-        			Наименование Мероприятия
+        			<?= $this->params['event_name']; ?>
         		</div>
 
-		        <div class="logo"></div>
+		        <div class="logo">
+		        	<?php if (!empty($this->params['logo'])): ?>
+		        	<img src="<?= $this->params['logo']; ?>" alt="">
+		        	<?php endif; ?>
+		        </div>
 			</header>
 
 			<main class="content" id="content">
 
-				<video id="player" class="video-js vjs-default-skin vjs-16-9" controls preload="auto" data-setup='{"width":auto,"height":auto,"fluid":true,"aspectRatio":"4:3"}'>
+				<video id="player" class="video-js vjs-default-skin" controls preload="auto" data-setup='{"width":auto,"height":auto,"fluid":true,"aspectRatio":"4:3"}'>
 			  		<!-- <source src="/files/out.mp4" type="video/mp4"></source> -->
 			  		<!-- <source src="/files/video_1080p_2018_03_29_16_10_14.mp4" type="video/mp4"></source> -->
 				</video>
 
-				<button class="button j-open-modal" data-modal="tmpl-send-message" id="send-video">Отправить на почту</button>
+				<button class="button j-open-modal" data-modal="tmpl-send-message" id="send-video"><?= $this->params['send_button']; ?></button>
 
 	        </main>
         </div>

@@ -4,6 +4,8 @@ class App
 {
     public $path = [];
     public $data = [];
+    public $params = [];
+    public $userData = [];
 
     protected $url = null;
     protected $query = null;
@@ -21,19 +23,114 @@ class App
         $this->url = current(explode('?', $this->request));
         $this->path = preg_split('/\/+/', $this->url, -1, PREG_SPLIT_NO_EMPTY);
 
-        if (isset($this->path[0]) && $this->path[0] == 'admin')
-        {
+        if (isset($this->path[0]) && $this->path[0] == 'admin') {
         	$this->is_admin = true;
         }
+
+        if ($this->is_admin && count($_POST)) {
+        	if (isset($_POST['action']) && $_POST['action'] === 'auth-form') {
+        		$this->authForm($_POST);
+        	} else {
+        		$this->updateData($_POST, $_FILES);
+        	}
+        }
+
+        if ($this->is_admin && isset($this->path[1]) && $this->path[1] === 'logout')
+        {
+        	unset($_SESSION['userData']);
+        	redirect('/admin', 301);
+        }
+
+        if (!empty($_SESSION['userData'])) {
+    		$this->userData = $_SESSION['userData'];
+    	}
+	}
+
+	private function authForm($data = [])
+	{
+		if (isset($data['login']) && $data['password']) {
+			$user = Q("SELECT `l`.`value` as `login`, `p`.`value` as `password` FROM `settings` as `l`
+				LEFT JOIN `settings` as `p` ON (`p`.`system`='password' AND `p`.`value` LIKE '153426rhfy')
+				WHERE (`l`.`system`='login' AND `l`.`value` LIKE 'admin')"
+			)->row();
+
+			if (!empty($user['login']) && !empty($user['password']))
+			{
+				$_SESSION['userData'] = $user;
+			}
+		}
+
+		redirect('/admin', 301);
+	}
+
+	private function loadData()
+	{
+		$sample = [
+			'event_name',
+			'logo',
+			'mode',
+			'login',
+			'password',
+			'time',
+			'send_button',
+			'send_email',
+			'send_password',
+			'send_server',
+			'send_port',
+			'send_signature',
+		];
+
+		$data = [];
+		$result = Q("SELECT * FROM `settings`")->all();
+
+		if (!empty($result)) {
+			foreach ($result as $item) {
+				$data[$item['system']] = $item['value'];
+			}
+		}
+
+		$this->params = $data;
+	}
+
+	private function updateData($post = [], $files = [])
+	{
+		if (!empty($files)) {
+			$dir = PATH_ROOT.DS.'cache';
+
+			$ext = pathinfo($files['logo']['name'], PATHINFO_EXTENSION);
+
+			$filename = sprintf('/cache/logo.%s', $ext);
+			$uploadFile = sprintf('%s/logo.%s', $dir, $ext);
+
+			if (move_uploaded_file($files['logo']['tmp_name'], $uploadFile)) {
+				$post['logo'] = $filename;
+			}
+		}
+
+		if (!empty($post)) {
+			foreach ($post as $name => $value) {
+				$count = Q("SELECT COUNT(`id`) as `count` FROM `settings` WHERE `system` LIKE ?s LIMIT 1", [
+					$name
+				])->row('count');
+
+				if ($count) {
+					Q("UPDATE `settings` SET `value`=?s WHERE `system` LIKE ?s LIMIT 1", [
+						$value, $name
+					]);
+				} else {
+					Q("INSERT INTO `settings` SET `system`=?s, `value`=?s", [
+						$name, $value
+					]);
+				}
+			}
+		}
+
+		redirect('/admin', 301);
 	}
 
 	private function render()
 	{
-		// if ($this->page['id'] == 0) {
-		//     header('HTTP/1.1 404 Not Found', true, 404);
-		// }
-
-		// $this->viewer->display($this->pattern);
+		// exit(__($this->params));
 
 		$template = $this->is_admin ? 'admin' : 'base';
 
@@ -42,6 +139,8 @@ class App
 
 	public function terminate()
 	{
+        $this->loadData();
+
 		// $target = 'uploads.php';
 		// $link = 'uploads';
 		// symlink(dirname(PATH_ROOT).DS.'input', PATH_ROOT.DS.'files');
