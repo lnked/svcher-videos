@@ -38,7 +38,7 @@ class App
         if ($this->is_admin && isset($this->path[1]) && $this->path[1] === 'logout')
         {
         	unset($_SESSION['userData']);
-        	redirect('/admin', 301);
+        	redirect('/', 301);
         }
 
         if (!empty($_SESSION['userData'])) {
@@ -77,6 +77,8 @@ class App
 			'send_password',
 			'send_server',
 			'send_port',
+			'send_name',
+			'send_subject',
 			'send_signature',
 		];
 
@@ -122,6 +124,10 @@ class App
 						$name, $value
 					]);
 				}
+
+				if ($name == 'pathname' && is_dir($value)) {
+					symlink($value, PATH_ROOT.DS.'files');
+				}
 			}
 		}
 
@@ -130,8 +136,6 @@ class App
 
 	private function render()
 	{
-		// exit(__($this->params));
-
 		$template = $this->is_admin ? 'admin' : 'base';
 
 		require PATH_TEMPLATE.DS.$template.'.phtml';
@@ -139,15 +143,7 @@ class App
 
 	public function terminate()
 	{
-        $this->loadData();
-
-		// $target = 'uploads.php';
-		// $link = 'uploads';
-		// symlink(dirname(PATH_ROOT).DS.'input', PATH_ROOT.DS.'files');
-		// echo readlink(PATH_ROOT.DS.'files');
-
-		$this->data = _scandir(PATH_ROOT.DS.'files');
-
+		$this->loadData();
 		$this->render();
 	}
 }

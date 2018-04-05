@@ -12,6 +12,8 @@ define('PATH_ROOT', __DIR__);
 define('PATH_CORE', PATH_ROOT.DS.'core');
 define('PATH_VENDORS', PATH_CORE.DS.'vendors');
 define('PATH_TEMPLATE', PATH_CORE.DS.'template');
+define('PATH_CACHE', PATH_ROOT.DS.'cache');
+define('PATH_FILES', PATH_ROOT.DS.'files');
 
 define('DB_HOST', 'localhost');
 define('DB_BASE', 'video');

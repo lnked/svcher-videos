@@ -1,15 +1,20 @@
 ((d, b, w) => {
 
-	var player = videojs('player', {});
-	var videos = d.querySelectorAll('.j-load-video');
+    Modal.init();
 
-	var sidebar = d.getElementById('sidebar');
-	var content = d.getElementById('content');
-	var sendButton = d.getElementById('send-video');
+	var hasStarted = false;
 
-	var virtual = {};
+	var $player = null;
+	var interval = null;
+	var timeout = 10000;
+	var playTimeout = baseTimeout * 1000;
+
+	var $sidebar = $('#sidebar');
+	var $content = $('#content');
+	var $sendButton = $('#send-video');
+
+	var virtual = [];
 	var current = 0;
-	var count = videos.length;
 
 	var scrollHeight = Math.max(
 		b.scrollHeight, document.documentElement.scrollHeight,
@@ -17,52 +22,68 @@
 		b.clientHeight, document.documentElement.clientHeight
 	);
 
-	player.on('ended', function(){
-		playNext();
-	});
+	var preloader = $(template('tmpl-preloader'));
 
-	if (count) {
-		$(videos).each(function(index, item) {
-			var $item = $(this);
+	if (mode === 'video') {
+		$player = videojs('player-video', {});
 
-			virtual[index] = {
-				offset: $item.offset().top,
-				video: $item.data('video'),
-				poster: $item.data('poster')
-			};
-
-			(function(node, i) {
-				node.addEventListener('click', function(e) {
-					current = i;
-					playItem();
-				});
-			})(item, index)
-
-			if (count - 1 == index) {
-				startCycle();
-			}
-		});
+		// $player.on('ended', function(){
+		// 	playNext();
+		// });
+	} else {
+		$player = $('#player-gif');
 	}
 
-	sendButton.addEventListener('click', function(e) {
-		player.pause();
+	$sendButton.on('click', function(e) {
+		e.preventDefault();
+
+		pauseVideo();
+
+		var $template = $(template('tmpl-send-message', {
+			session: virtual[current].name
+		}));
+
+		console.log('virtual[current].name  :' + virtual[current].name);
+
+		$('body').append($template);
+		$('body').addClass('modal-open');
+
+		$template.removeClass('is-hidden');
+
+        setTimeout(function() {
+			$template.addClass('is-animated');
+			$template.addClass('is-open');
+        }, 16);
 	});
+
+	function startInterval()
+	{
+		interval = setInterval(function() {
+			playNext();
+		}, playTimeout);
+	}
+
+	function pauseVideo()
+	{
+		if (mode === 'video') {
+			$player.pause();
+		}
+
+		clearInterval(interval);
+	}
 
 	function clearActive()
 	{
-		for (var i = 0; i < videos.length; i++)
-		{
-			videos[i].classList.remove('is-active');
-		}
+		$sidebar.find('.j-play-video').removeClass('is-active');
 	}
 
 	function setActive(callback)
 	{
 		var top = virtual[current].offset - 20;
 
-		$(sidebar).animate({'scrollTop': top}, 'medium');
+		$sidebar.animate({'scrollTop': top}, 'medium');
 
-		videos[current].classList.add('is-active');
+		$sidebar.find('.j-play-video').eq(current).addClass('is-active');
 
 		callback();
 	}
@@ -76,9 +97,13 @@
 			var item = virtual[current];
 
 			setActive(function() {
-				player.src(item.video);
-				player.poster(item.poster);
-				player.play();
+				if (mode === 'video') {
+					$player.src(item.video);
+					$player.poster(item.poster);
+					$player.play();
+				} else {
+					$player.html($(template('tmpl-gif', { src: item.video })));
+				}
 			});
 		}
 	}
@@ -87,7 +112,7 @@
 	{
 		current++;
 
-		if (current >= count)
+		if (current >= virtual.length)
 		{
 			current = 0;
 		}
@@ -99,9 +124,9 @@
 	{
 		current = 0;
 		playItem();
-	}
 
-    Modal.init();
+		startInterval();
+	}
 
     function validation(form, errors)
     {
@@ -154,14 +179,15 @@
                 errors = response.errors;
             }
 
-            console.log(form, errors);
-
             validation(form, errors);
         }
 
         if (response.hasOwnProperty('message'))
         {
-            console.log(response.title, response.message);
+            Modal.show('tmpl-popup-message', {
+            	title: response.title,
+            	message: response.message
+            });
         }
     }
 
@@ -217,5 +243,79 @@
 
     	return false;
     });
+
+    $('body').on('click', '.j-play-video', function(e){
+    	current = $sidebar.find($(this)).index();
+    	pauseVideo();
+
+    	playItem();
+
+    	startInterval();
+    });
+
+    function renderData(videos) {
+    	var _count = Object.keys(videos).length;
+
+    	$sidebar.find('.preloader').fadeOut().remove();
+
+    	if (_count) {
+    		Object.keys(videos).forEach(function(key) {
+    			var data = videos[key];
+
+    			if (!($sidebar.find(`#${key}`).length)) {
+	    			var $videoItem = $(template('tmpl-video-item', {
+			    		id: key,
+			    		mode: mode,
+			    		file: {
+			    			name: data.name,
+			    			video: data.video,
+			    			poster: data.poster,
+			    			preview: data.preview
+			    		}
+			    	}));
+
+					$sidebar.append($videoItem);
+
+					virtual.push({
+						name: data.name,
+						video: data.video,
+						poster: data.poster,
+						offset: $videoItem.offset().top
+					});
+    			}
+    		});
+    	}
+    }
+
+    $('body').on('modal.close', function() {
+    	startCycle();
+    });
+
+    function subscribe() {
+    	$sidebar.append(preloader);
+
+    	$.ajax({
+            url: '/api/get-data',
+            type: 'POST',
+            processData: false,
+            success: function(response) {
+				if (response.status) {
+					renderData(response.videos);
+				}
+
+				if (!hasStarted) {
+					hasStarted = true;
+		    		startCycle();
+		    	}
+
+				setTimeout(subscribe, timeout);
+		    },
+            error: function(response) {
+		    	setTimeout(subscribe, timeout);
+		    }
+        });
+    }
+
+    subscribe();
 
 })(document, document.body, window);

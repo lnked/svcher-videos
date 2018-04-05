@@ -19,16 +19,80 @@
 	<meta name="msapplication-config" content="/static/favicon/browserconfig.xml">
 	<meta name="theme-color" content="#ffffff">
 
+	<?php $mode = (!empty($this->params['mode'])) ? $this->params['mode'] : 'video'; ?>
+
+	<script>
+		var mode = '<?= $mode; ?>'
+		var baseTimeout = '<?= $this->params['time']; ?>'
+	</script>
+
 	<title>VIDEO MANAGER</title>
 </head>
 <body class="page">
 
 <div class="layout-wrapper">
 
+	<template id="tmpl-gif">
+		<img src="{{ src }}" alt="" class="video-gif__image">
+	</template>
+
+	<template id="tmpl-preloader">
+		<div class="preloader">
+			<span class="preloader__bullet"></span>
+			<span class="preloader__bullet"></span>
+			<span class="preloader__bullet"></span>
+		</div>
+	</template>
+
+	<template id="tmpl-video-item">
+		<button type="button" class="video-item j-play-video" data-mode="{{ mode }}" id="{{ id }}" data-video="{{ file.video }}" data-poster="{{ file.poster }}">
+			<img src="{{ file.preview }}" class="video-item__image" alt="">
+			<span class="video-item__name">{{ file.name }}</span>
+		</button>
+	</template>
+
+	<template id="tmpl-popup-message">
+	    <div class="popup-mesage" id="popup-message" aria-hidden="true" tabindex="-1">
+	        <button class="popup-mesage__close j-close-modal" data-target="#popup-message" aria-label="Закрыть"></button>
+
+	        {{#if title}}
+	        <header class="popup-mesage__header">
+	            {{title}}
+	        </header>
+	        {{/if}}
+
+	        {{#if message}}
+	        <div class="popup-mesage__body">
+	            {{message}}
+	        </div>
+	        {{/if}}
+	    </div>
+	</template>
+
+	<template id="tmpl-popup-error">
+	    <div class="popup-mesage popup-mesage--error" id="popup-error" aria-hidden="true" tabindex="-1">
+	        <button class="popup-mesage__close j-close-modal" data-target="#popup-error" aria-label="Закрыть"></button>
+
+	        {{#if title}}
+	        <header class="popup-mesage__header">
+	            {{title}}
+	        </header>
+	        {{/if}}
+
+	        {{#if message}}
+	        <div class="popup-mesage__body">
+	            {{message}}
+	        </div>
+	        {{/if}}
+	    </div>
+	</template>
+
 	<template id="tmpl-send-message">
 		<div class="modal" aria-hidden="true" tabindex="-1" id="send-message">
 			<form action="/api/send-message" method="POST" class="modal__dialog j-ajax-form">
 				<button type="button" class="modal__close j-close-modal" data-target="#send-message"></button>
+
+				<input type="hidden" name="session" value="{{ session }}">
 
 				<div class="modal__header">
 					<div class="modal__title">Отправить видео</div>
@@ -61,16 +125,10 @@
 
     <div class="layout-wrapper__container">
 
-        <aside class="sidebar" id="sidebar">
-        	<?php foreach ($this->data as $name => $file): ?>
-    		<button type="button" class="video-item j-load-video" data-video="<?= $file->video ?>" data-poster="<?= $file->poster ?>">
-				<img src="<?= $file->preview ?>" class="video-item__image" alt="">
-				<span class="video-item__name"><?= $name ?></span>
-			</button>
-        	<?php endforeach; ?>
-		</aside>
+        <aside class="sidebar" id="sidebar"></aside>
 
         <div class="container">
+
         	<header class="header">
 
         		<div class="header__event">
@@ -82,18 +140,23 @@
 		        	<img src="<?= $this->params['logo']; ?>" alt="">
 		        	<?php endif; ?>
 		        </div>
+
 			</header>
 
 			<main class="content" id="content">
 
-				<video id="player" class="video-js vjs-default-skin" controls preload="auto" data-setup='{"width":auto,"height":auto,"fluid":true,"aspectRatio":"4:3"}'>
-			  		<!-- <source src="/files/out.mp4" type="video/mp4"></source> -->
-			  		<!-- <source src="/files/video_1080p_2018_03_29_16_10_14.mp4" type="video/mp4"></source> -->
-				</video>
+	        	<?php if ($mode == 'gif'): ?>
+	        		<div id="player-gif" class="video-gif"></div>
+	        	<?php else: ?>
+	        		<!-- controls -->
+	        		<video id="player-video" class="video-js vjs-default-skin" preload="auto" data-setup='{"width":auto,"height":auto,"fluid":true,"aspectRatio":"4:3"}'></video>
+	        	<?php endif; ?>
 
-				<button class="button j-open-modal" data-modal="tmpl-send-message" id="send-video"><?= $this->params['send_button']; ?></button>
+	 			<!-- j-open-modal -->
+				<button class="button" data-modal="tmpl-send-message" id="send-video"><?= $this->params['send_button']; ?></button>
 
 	        </main>
+
         </div>
 
     </div>
@@ -102,6 +165,7 @@
 
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/video.min.js"></script>
+<script src="/static/js/template.js"></script>
 <script src="/static/js/template7.min.js"></script>
 <script src="/static/js/modal.min.js"></script>
 <script src="/static/js/app.js"></script>

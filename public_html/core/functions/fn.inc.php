@@ -1,73 +1,84 @@
 <?php declare(strict_types = 1);
 
+use Intervention\Image\ImageManager;
+
+function escape($value = '')
+{
+    return $value ? htmlspecialchars($value) : '';
+}
+
 function _scan($dir)
 {
 	return array_diff(scandir($dir), [ '.', '..', '.DS_Store', '.gitkeep', '.gitignore' ]);
 }
 
-function _scandir($source, $response = [])
+function _scannode($source, $name, $mode = 'video')
 {
+    $dir = $source.DS.$name;
+
+    if (is_dir($dir)) {
+        $path = str_replace(PATH_ROOT, '', $dir);
+        $sample = _scan($dir);
+        $explored = new \stdClass;
+
+        foreach ($sample as $file)
+        {
+            $type = '';
+
+            if (is_gif($file)) {
+                if ($mode == 'gif') {
+                    $explored->video = $path.DS.$file;
+                } else {
+                    $explored->fallback = $path.DS.$file;
+                }
+            }
+
+            if (is_video($file)) {
+                if ($mode == 'video') {
+                    $explored->video = $path.DS.$file;
+                } else {
+                    $explored->fallback = $path.DS.$file;
+                }
+            }
+
+            if ($file == 'images' && is_dir($dir.DS.$file))
+            {
+                $images = _scan($dir.DS.$file);
+                $shift_image = array_shift($images);
+
+                if (is_image($shift_image))
+                {
+                    $explored->poster = $path.DS.$file.DS.$shift_image;
+                }
+            }
+        }
+
+        $explored->preview = makePreview($explored->poster, $name);
+
+        if (isset($explored->video)) {
+            $explored->name = $name;
+        }
+
+        return $explored;
+    }
+
+    return [];
+}
+
+function _scandir($source, $mode = 'video')
+{
+    $result = [];
+
 	if (is_dir($source))
     {
         $files = _scan($source);
 
         foreach ($files as $name)
         {
-        	$dir = $source.DS.$name;
-
-        	if (is_dir($dir)) {
-        		$explored = new \stdClass;
-        		$sample = _scan($dir);
-        		$path = str_replace(PATH_ROOT, '', $dir);
-
-        		foreach ($sample as $file)
-        		{
-        			$type = '';
-
-                    if ($file == 'images' && is_dir($dir.DS.$file))
-                    {
-                        $images = _scan($dir.DS.$file);
-
-                        foreach ($images as $image)
-                        {
-                            if (is_image($image))
-                            {
-                                $explored->poster = $path.DS.$file.DS.$image;
-                                $explored->preview = $path.DS.$file.DS.$image;
-                            }
-                        }
-                    }
-
-        			if (is_video($file)) {
-        				$type = 'video';
-        			}
-
-                    if (is_image($file)) {
-                        $type = 'poster';
-                    }
-
-        			if (is_gif($file)) {
-        				$type = 'gif';
-        			}
-
-        			if ($type) {
-        				$explored->{$type} = $path.DS.$file;
-
-        				if ($type == 'poster')
-        				{
-        					$explored->preview = $path.DS.$file;
-        				}
-        			}
-        		}
-
-                if (isset($explored->video)) {
-                    // exit(__('explored: ', $explored));
-                    $response[$name] = $explored;
-                }
-        	}
+            $result[$name] = _scannode($source, $name, $mode);
         }
 
-        return $response;
+        return $result;
     }
 }
 
@@ -88,6 +99,32 @@ if (!function_exists('__')) {
 
         echo '</pre>';
     }
+}
+
+function makePreview($filename, $pathname)
+{
+    $source = PATH_ROOT.$filename;
+
+    $preview = sprintf('%s/%s.jpg', PATH_CACHE, $pathname);
+    $preview_cache = sprintf('%s/%s.cache.jpg', PATH_CACHE, $pathname);
+
+    if (!file_exists($preview)) {
+        copy($source, $preview_cache);
+
+        $manager = new ImageManager([
+            'driver' => 'Gd'
+        ]);
+
+        $img = $manager->make($preview_cache);
+
+        $img->resize(376, 250);
+
+        $img->save($preview);
+
+        unlink($preview_cache);
+    }
+
+    return str_replace(PATH_ROOT, '', $preview);
 }
 
 function elvis($first = '', $second = '')

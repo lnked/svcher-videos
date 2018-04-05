@@ -48,19 +48,17 @@
 
 		<header class="header">
 			<div class="header__wrapper">
-				<div class="header__title">Администрирование</div>
+				<div class="header__title">Администрирование, <a href="/">на сайт</a></div>
 				<a href="/admin/logout" class="button-logout">Выйти</a>
 			</div>
 		</header>
-
-		<!-- Интерфейс Администратора, при нажатии на Выйти необходимо проверить сохранили или нет. -->
 
         <div class="container">
         	<main class="content" id="content">
 				<form action="" method="POST" enctype="multipart/form-data">
 					<label class="label">
 						<span class="label__name">Наименование мероприятия</span>
-						<input name="event_name" class="input" placeholder="Введите название..." value="<?= $this->params['event_name']; ?>">
+						<input name="event_name" class="input" placeholder="Введите название..." value="<?= escape($this->params['event_name']); ?>">
 					</label>
 
 					<div class="label">
@@ -101,12 +99,12 @@
 
 					<label class="label">
 						<span class="label__name">Время просмотра, сек<!-- 30 - 600 --></span>
-						<input name="time" class="input input--number" placeholder="Введите время в секундах..." value="<?= $this->params['time']; ?>">
+						<input name="time" class="input input--number" placeholder="Введите время в секундах..." value="<?= escape($this->params['time']); ?>">
 					</label>
 
 					<label class="label">
 						<span class="label__name">Адрес папки с готовыми проектами</span>
-						<input name="pathname" class="input" placeholder="Путь к папке..." value="<?= $this->params['pathname']; ?>">
+						<input name="pathname" class="input" placeholder="Путь к папке..." value="<?= escape($this->params['pathname']); ?>">
 					</label>
 
 					<!--
@@ -120,44 +118,54 @@
 
 					<label class="label">
 						<span class="label__name">Логин</span>
-						<input name="login" class="input input--password" placeholder="Введите логин..." value="<?= $this->params['login']; ?>">
+						<input name="login" class="input input--password" placeholder="Введите логин..." value="<?= escape($this->params['login']); ?>">
 					</label>
 
 					<label class="label">
 						<span class="label__name">Пароль</span>
-						<input name="password" class="input input--password" placeholder="Введите пароль..." value="<?= $this->params['password']; ?>">
+						<input name="password" class="input input--password" placeholder="Введите пароль..." value="<?= escape($this->params['password']); ?>">
 					</label>
 
 					<h2>Параметры почты</h2>
 
 					<label class="label">
 						<span class="label__name">Кнопка теста</span>
-						<input name="send_button" class="input" placeholder="Введите текст кнопки..." value="<?= $this->params['send_button']; ?>">
+						<input name="send_button" class="input" placeholder="Введите текст кнопки..." value="<?= escape($this->params['send_button']); ?>">
+					</label>
+
+					<label class="label">
+						<span class="label__name">Тема сообщения</span>
+						<input name="send_subject" class="input" placeholder="Введите тему сообщения..." value="<?= escape($this->params['send_subject']); ?>">
 					</label>
 
 					<label class="label">
 						<span class="label__name">Адрес отправителя</span>
-						<input name="send_email" class="input" placeholder="Введите ардес с которого будет идти отправка..." value="<?= $this->params['send_email']; ?>">
+						<input name="send_email" class="input" placeholder="Введите ардес с которого будет идти отправка..." value="<?= escape($this->params['send_email']); ?>">
+					</label>
+
+					<label class="label">
+						<span class="label__name">Имя отправителя</span>
+						<input name="send_name" class="input" placeholder="Введите имя отправка..." value="<?= escape($this->params['send_name']); ?>">
 					</label>
 
 					<label class="label">
 						<span class="label__name">Пароль</span>
-						<input name="send_password" class="input input--password" placeholder="Введите пароль для почты..." value="<?= $this->params['send_password']; ?>">
+						<input name="send_password" class="input input--password" placeholder="Введите пароль для почты..." value="<?= escape($this->params['send_password']); ?>">
 					</label>
 
 					<label class="label">
 						<span class="label__name">SMTP</span>
-						<input name="send_server" class="input input--short" placeholder="Введите сервер для отправки почты..." value="<?= $this->params['send_server']; ?>">
+						<input name="send_server" class="input input--short" placeholder="Введите сервер для отправки почты..." value="<?= escape($this->params['send_server']); ?>">
 					</label>
 
 					<label class="label">
 						<span class="label__name">Port</span>
-						<input name="send_port" class="input input--number" placeholder="Введите порт отправки почты..." value="<?= $this->params['send_port']; ?>">
+						<input name="send_port" class="input input--number" placeholder="Введите порт отправки почты..." value="<?= escape($this->params['send_port']); ?>">
 					</label>
 
 					<label class="label">
 						<span class="label__name">Подпись в письме</span>
-						<textarea name="send_signature" id="" cols="30" rows="10" class="textarea"><?= $this->params['send_signature']; ?></textarea>
+						<textarea name="send_signature" id="" cols="30" rows="10" class="textarea"><?= escape($this->params['send_signature']); ?></textarea>
 					</label>
 
 					<?php /*

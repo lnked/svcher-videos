@@ -46,6 +46,46 @@ body, input, textarea, select, button {
     text-align: left;
 }
 
+@keyframes bounce-delay {
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+}
+
+.preloader {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.preloader__bullet {
+    width: 14px;
+    height: 14px;
+    margin: 0 2px;
+    border-radius: 100%;
+    display: inline-block;
+    background-color: #00529f;
+    animation-name: bounce-delay;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: both;
+}
+
+.preloader__bullet:nth-child(1) {
+    animation-delay: -0.35s;
+}
+
+.preloader__bullet:nth-child(2) {
+    animation-delay: -0.23s;
+}
+
+
 .input-file {
     padding: 5px;
     display: block;

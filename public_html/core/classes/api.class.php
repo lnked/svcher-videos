@@ -7,15 +7,26 @@ class Api
     private $post = [];
     private $action = '';
     private $status = false;
+    private $settings = [];
 
     public function __construct()
     {
         $this->post = $_POST;
-        $this->action = $this->prepare($_GET['_d']);
+
+        if (isset($_GET['_d'])) {
+            $this->action = $this->prepare($_GET['_d']);
+        }
     }
 
-    public function loadData()
+    public function getData()
     {
+        $this->_settings();
+
+        $this->data = [];
+        $this->data['videos'] = _scandir(PATH_ROOT.DS.'files', $this->settings['mode']);
+        $this->status = true;
+
+        $this->response();
     }
 
     public function removeLogo()
@@ -33,20 +44,39 @@ class Api
         $this->status = true;
     }
 
+    private function render($data = [])
+    {
+        extract($data);
+
+        ob_start();
+
+        require PATH_TEMPLATE.DS.'message.phtml';
+
+        return ob_get_clean();
+    }
+
+    private function addStatistics($data)
+    {
+        Q("INSERT INTO `statistics` SET `datetime`=?i, `session`=?s, `name`=?s, `email`=?s, `phone`=?s", [
+            $data['datetime'],
+            $data['session'],
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+        ]);
+    }
+
     public function sendMessage()
     {
-        $settings = Q("SELECT `system`, `value` FROM `settings` WHERE `system` IN (?ls)", [
-            'logo', 'mode', 'event_name', 'send_email', 'send_password', 'send_server', 'send_port', 'send_signature'
-        ])->all();
-
-        exit(__($settings));
+        $this->_settings();
 
         $errors = [];
 
         $required = [
             'name',
             'phone',
-            'email'
+            'email',
+            'session'
         ];
 
         foreach ($required as $name)
@@ -55,6 +85,10 @@ class Api
             {
                 $errors[$name] = true;
             }
+        }
+
+        if (!empty($this->post['email']) && !is_email($this->post['email'])) {
+            $errors['email'] = true;
         }
 
         if (!empty($errors))
@@ -68,98 +102,89 @@ class Api
             return;
         }
 
-        $subject = "Новое сообщение на сайте";
+        $session = $this->post['session'];
 
-        $body  = '';
+        $selected = _scannode(PATH_FILES, $session, $this->settings['mode']);
 
-        $body .= '<p>Здравствуйте,</p>';
-        $body .= '<p>Новое сообщение, на сайте ' . $domen . '</p>';
-        $body .= '<p>--------------------</p>';
+        $user_name = $this->post['name'];
+        $user_email = $this->post['email'];
+        $user_phone = $this->post['phone'];
 
-        if (!empty($this->post['name']))
-        {
-            $body .= '<p>Контактное лицо: <strong>'. $this->post['name'] .'</strong></p>';
-        }
+        $this->addStatistics([
+            'datetime'  => time(),
+            'session'   => $session,
+            'name'      => $user_name,
+            'email'     => $user_email,
+            'phone'     => $user_phone
+        ]);
 
-        if (!empty($this->post['phone']))
-        {
-            $body .= '<p>Телефон: <strong>'. $this->post['phone'] .'</strong></p>';
-        }
-
-        if (!empty($this->post['email']))
-        {
-            $body .= '<p>E-mail: <strong>'. $this->post['email'] .'</strong></p>';
-        }
-
-        $body .= '<p>--------------------</p>';
-        $body .= '<p>Дата отправки: '. date('d.m.Y H:i:s') .'</p>';
-
-        $body .= '<p>С уважением,<br>Администрация мероприятия</p>';
-
-        $emails = [
-            'ed.proff@gmail.com' => 'ED CELEBRO'
+        $item = [
+            'image' => $selected->poster,
+            'video' => $selected->video
         ];
 
-        // // Create the message
-        // $message = (new Swift_Message())
+        $data = [
+            'item' => $item,
+            'settings' => $this->settings
+        ];
 
-        // // Give the message a subject
-        // ->setSubject('Your subject')
+        $emails[$user_email] = $user_name;
 
-        // // Set the From address with an associative array
-        // ->setFrom(['john@doe.com' => 'John Doe'])
+        // Create the Transport
+        $transport = (new Swift_SmtpTransport($this->settings['send_server'], $this->settings['send_port'], 'ssl'))
+            ->setUsername($this->settings['send_email'])
+            ->setPassword($this->settings['send_password'])
+        ;
 
-        // // Set the To addresses with an associative array (setTo/setCc/setBcc)
-        // ->setTo(['receiver@domain.org', 'other@domain.org' => 'A name'])
+        // Create the Mailer using your created Transport
+        $mailer = new Swift_Mailer($transport);
 
-        // // Give it a body
-        // ->setBody('Here is the message itself')
+        // Create a message
+        $message = (new Swift_Message())
+            ->setSubject($this->settings['send_subject'])
+            ->setFrom([
+                $this->settings['send_email'] => $this->settings['send_name']
+            ])
+            ->setTo($emails)
+            // ->attach(
+            //     Swift_Attachment::fromPath(PATH_ROOT.$item['video'])->setFilename('video.mp4')
+            // )
+        ;
 
-        // // And optionally an alternative body
-        // ->addPart('<q>Here is the message itself</q>', 'text/html')
+        $data['logo'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$this->settings['logo']));
+        $data['image'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['image']));
+        $data['video'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['video']));
 
-        // // Optionally add any attachments
-        // ->attach(Swift_Attachment::fromPath('my-document.pdf'))
-        // ;
+        $html = $this->render($data);
 
-        // $message->attach(
-        //     Swift_Attachment::fromPath('/files/2018-03-28_15-42-10/video_1080p_2018_03_29_16_10_14.mp4')->setFilename('video.mp4')
-        // );
+        $message->setBody($html, 'text/html');
 
-        // if ($mailer->send($message)) {
-        //     $this->status = true;
-        // } else {
-        //     $this->status = false;
-        // }
+        if ($mailer->send($message)) {
+            $this->status = true;
 
-        // $body = '<p>С уважением,<br>Администрация мероприятия</p>';
+            $this->data = [
+                'title' => 'Сообщение',
+                'message' => 'Видео файл отправлен'
+            ];
+        } else {
+            $this->status = false;
+        }
 
-        // $emails = [
-        //     'svcher@bk.ru' => 'Sergey Cher',
-        //     'ed.proff@gmail.com' => 'ED CELEBRO',
-        // ];
+        $this->response();
+    }
 
-        // // Create the Transport
-        // $transport = (new Swift_SmtpTransport('smtp.mail.ru', 465, 'ssl'))
-        //     ->setUsername('timefreeze23@softkor.ru')
-        //     ->setPassword('153426rhfy')
-        // ;
+    private function _settings()
+    {
+        $data = [];
+        $result = Q("SELECT * FROM `settings`")->all();
 
-        // // Create the Mailer using your created Transport
-        // $mailer = new Swift_Mailer($transport);
+        if (!empty($result)) {
+            foreach ($result as $item) {
+                $data[$item['system']] = $item['value'];
+            }
+        }
 
-        // // Create a message
-        // $message = (new Swift_Message('subject'))
-        //     ->setFrom(['timefreeze23@softkor.ru' => 'Софткор'])
-        //     ->setTo($emails)
-        //     ->setBody($body, 'text/html')
-        // ;
-
-        // $message->attach(
-        //     Swift_Attachment::fromPath(PATH_ROOT.DS.'files/2018-03-28_15-42-10/video_1080p_2018_03_29_16_10_14.mp4')->setFilename('video.mp4')
-        // );
-
-        // $mailer->send($message);
+        $this->settings = $data;
     }
 
     public function prepare($action)
@@ -177,7 +202,7 @@ class Api
 
         $this->data['status'] = $this->status;
 
-        echo json_encode($this->data, 64 | 256);
+        exit(json_encode($this->data, 64 | 256));
     }
 
     public function handleRequest()
