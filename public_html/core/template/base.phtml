@@ -28,7 +28,7 @@
 
 	<title>VIDEO MANAGER</title>
 </head>
-<body class="page">
+<body class="page" style="background-color: <?= $this->params['style_body_bg']; ?>; color: <?= $this->params['style_body_text']; ?>;">
 
 <div class="layout-wrapper">
 
@@ -56,7 +56,7 @@
 	        <button class="popup-mesage__close j-close-modal" data-target="#popup-message" aria-label="Закрыть"></button>
 
 	        {{#if title}}
-	        <header class="popup-mesage__header">
+	        <header class="popup-mesage__header popup-mesage__header--success">
 	            {{title}}
 	        </header>
 	        {{/if}}
@@ -74,7 +74,7 @@
 	        <button class="popup-mesage__close j-close-modal" data-target="#popup-error" aria-label="Закрыть"></button>
 
 	        {{#if title}}
-	        <header class="popup-mesage__header">
+	        <header class="popup-mesage__header popup-mesage__header--failure">
 	            {{title}}
 	        </header>
 	        {{/if}}
@@ -106,18 +106,28 @@
 
 					<label class="label">
 						<span class="label__name">Номер телефона</span>
-						<input name="phone" class="input">
+						<input name="phone" id="send-phone" class="input">
 					</label>
 
 					<label class="label">
 						<span class="label__name">Электронная почта</span>
-						<input name="email" class="input">
+						<input name="email" id="send-email" class="input">
 					</label>
+
+					<label class="ui-checkbox">
+                        <input type="checkbox" name="photo" value="1" class="ui-checkbox__input" checked>
+                        <span class="ui-checkbox__visible" role="checkbox" aria-checked="false" tabindex="0"> </span>
+                        <span class="ui-checkbox__label">
+                            <span class="ui-checkbox__label__middle">Добавить фотографию в письмо</span>
+                        </span>
+                    </label>
 				</div>
 
 				<div class="modal__footer">
-					<button type="reset" class="button-reset j-close-modal">Отменить</button>
-					<button type="submit" class="button-submit">Отправить</button>
+					<button type="reset" class="button-reset j-close-modal" data-target="#send-message">
+						<span class="button-reset__underline">Отменить</span>
+					</button>
+					<button type="submit" class="button-submit" style="background-color: <?= $this->params['style_button_bg']; ?>; color: <?= $this->params['style_button_text']; ?>;">Отправить</button>
 				</div>
 			</form>
 		</div>
@@ -125,7 +135,9 @@
 
     <div class="layout-wrapper__container">
 
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" style="background-color: <?= $this->params['style_sidebar_bg']; ?>; color: <?= $this->params['style_sidebar_text']; ?>;">
+        	<div class="sidebar__scroll" id="sidebar"></div>
+        </aside>
 
         <div class="container">
 
@@ -153,7 +165,9 @@
 	        	<?php endif; ?>
 
 	 			<!-- j-open-modal -->
-				<button class="button" data-modal="tmpl-send-message" id="send-video"><?= $this->params['send_button']; ?></button>
+				<button class="button" data-modal="tmpl-send-message" id="send-video" style="background-color: <?= $this->params['style_button_bg']; ?>; color: <?= $this->params['style_button_text']; ?>;">
+					<?= $this->params['send_button']; ?>
+				</button>
 
 	        </main>
 
@@ -167,7 +181,9 @@
 <script src="/static/js/video.min.js"></script>
 <script src="/static/js/template.js"></script>
 <script src="/static/js/template7.min.js"></script>
+<script src="/static/js/maskedinput.min.js"></script>
 <script src="/static/js/modal.min.js"></script>
+<script src="/static/js/email-autocomplete.min.js"></script>
 <script src="/static/js/app.js"></script>
 
 </body>

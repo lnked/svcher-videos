@@ -39,25 +39,40 @@
 
 		pauseVideo();
 
-		var $template = $(template('tmpl-send-message', {
-			session: virtual[current].name
-		}));
+        Modal.show('tmpl-send-message', {
+        	session: virtual[current].name
+        });
 
-		console.log('virtual[current].name  :' + virtual[current].name);
+        $('#send-phone').mask('+7 (999) 999-99-99');
 
-		$('body').append($template);
-		$('body').addClass('modal-open');
-
-		$template.removeClass('is-hidden');
-
-        setTimeout(function() {
-			$template.addClass('is-animated');
-			$template.addClass('is-open');
-        }, 16);
+	    $('#send-email').autoEmail([
+			'mail.ru',
+			'bk.ru',
+			'inbox.ru',
+			'list.ru',
+			'yandex.ru',
+			'ya.ru',
+			'gmail.com',
+			'google.com',
+			'rotmail.ru',
+			'rochta.ru',
+			'rambler.ru',
+			'lenta.ru',
+			'autorambler.ru',
+			'myrambler.ru',
+			'ro.ru',
+			'rambler.ua',
+			'mailru.com',
+			'pisem.net'
+		]);
 	});
 
 	function startInterval()
 	{
+		pauseVideo();
+
+		playItem();
+
 		interval = setInterval(function() {
 			playNext();
 		}, playTimeout);
@@ -122,7 +137,6 @@
 
 	function startCycle()
 	{
-		playItem();
 		startInterval();
 	}
 
@@ -182,14 +196,22 @@
 
         if (response.hasOwnProperty('message'))
         {
-            Modal.show('tmpl-popup-message', {
+        	var _tpl;
+
+        	if (response.status) {
+        		_tpl = 'tmpl-popup-message';
+        	} else {
+        		_tpl = 'tmpl-popup-error';
+        	}
+
+            Modal.show(_tpl, {
             	title: response.title,
             	message: response.message
             });
 
             setTimeout(function() {
             	Modal.close(d.querySelectorAll('.popup-mesage.is-open'));
-            }, 2000);
+            }, 3000);
         }
     }
 
@@ -223,8 +245,7 @@
             processData: method.toLowerCase() == 'get',
             success: function(response)
 		    {
-		    	if (response.status)
-		        {
+		    	if (response.status) {
 		        	form.find('.error').removeClass('error');
 		    		form.get(0).reset();
 		    	}
@@ -248,10 +269,6 @@
 
     $('body').on('click', '.j-play-video', function(e){
     	current = $sidebar.find($(this)).index();
-    	pauseVideo();
-
-    	playItem();
-
     	startInterval();
     });
 
@@ -290,7 +307,7 @@
     }
 
     $('body').on('modal.close', function() {
-    	startCycle();
+    	startInterval();
     });
 
     function subscribe() {
@@ -307,7 +324,7 @@
 
 				if (!hasStarted) {
 					hasStarted = true;
-		    		startCycle();
+		    		startInterval();
 		    	}
 
 				setTimeout(subscribe, timeout);

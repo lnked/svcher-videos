@@ -1,12 +1,5 @@
 ((d, b, w) => {
 
-	function getfolder(e) {
-	    var files = e.target.files;
-	    var path = files[0].webkitRelativePath;
-	    var Folder = path.split("/");
-	    alert(Folder[0]);
-	}
-
 	// $(window).bind("beforeunload", function() {
 	//     return confirm("Закрыть?");
 	// });
@@ -27,6 +20,23 @@
 		    	alert('error');
 		    }
         });
+	});
+
+	$('.j-color-picker').each(function() {
+		var $picker = $(this);
+
+		$picker.ColorPicker({
+			onBeforeShow: function () {
+				$(this).ColorPickerSetColor(this.value);
+			},
+			onHide: function (colpkr) {
+				$(colpkr).hide();
+				return false;
+			},
+			onChange: function (hsb, hex, rgb) {
+				$picker.val(`#${hex}`);
+			}
+		});
 	});
 
 })(document, document.body, window);

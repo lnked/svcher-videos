@@ -79,6 +79,13 @@ class Api
             'session'
         ];
 
+        // $this->post = [
+        //     'name' => 'ed',
+        //     'phone' => '+7 988 666 77 66',
+        //     'email' => 'qwdf@23e.er',
+        //     'session' => 'session_2018_04_01_13_43_21',
+        // ];
+
         foreach ($required as $name)
         {
             if (empty($this->post[$name]))
@@ -104,11 +111,17 @@ class Api
 
         $session = $this->post['session'];
 
-        $selected = _scannode(PATH_FILES, $session, $this->settings['mode']);
+        $selected = _scannode(PATH_FILES, $session, $this->settings['mode'], $this->settings['send_photo_number']);
+
+        $send_photo = false;
 
         $user_name = $this->post['name'];
         $user_email = $this->post['email'];
         $user_phone = $this->post['phone'];
+
+        if (isset($this->post['photo']) && $this->post['photo'] == 1) {
+            $send_photo = true;
+        }
 
         $this->addStatistics([
             'datetime'  => time(),
@@ -130,43 +143,61 @@ class Api
 
         $emails[$user_email] = $user_name;
 
-        // Create the Transport
-        $transport = (new Swift_SmtpTransport($this->settings['send_server'], $this->settings['send_port'], 'ssl'))
-            ->setUsername($this->settings['send_email'])
-            ->setPassword($this->settings['send_password'])
-        ;
+        try {
+            // Create the Transport
+            $transport = (new Swift_SmtpTransport($this->settings['send_server'], $this->settings['send_port'], 'ssl'))
+                ->setUsername($this->settings['send_email'])
+                ->setPassword($this->settings['send_password'])
+            ;
 
-        // Create the Mailer using your created Transport
-        $mailer = new Swift_Mailer($transport);
+            // Create the Mailer using your created Transport
+            $mailer = new Swift_Mailer($transport);
 
-        // Create a message
-        $message = (new Swift_Message())
-            ->setSubject($this->settings['send_subject'])
-            ->setFrom([
-                $this->settings['send_email'] => $this->settings['send_name']
-            ])
-            ->setTo($emails)
-            // ->attach(
-            //     Swift_Attachment::fromPath(PATH_ROOT.$item['video'])->setFilename('video.mp4')
-            // )
-        ;
+            // Create a message
+            $message = (new Swift_Message())
+                ->setSubject($this->settings['send_subject'])
+                ->setFrom([
+                    $this->settings['send_email'] => $this->settings['send_name']
+                ])
+                ->setTo($emails)
+            ;
 
-        $data['logo'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$this->settings['logo']));
-        $data['image'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['image']));
-        $data['video'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['video']));
+            $data['logo'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$this->settings['logo']));
+            $data['video'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['video']));
 
-        $html = $this->render($data);
+            $data['send_photo'] = $send_photo;
 
-        $message->setBody($html, 'text/html');
+            if ($send_photo) {
+                $data['image'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['image']));
+            }
 
-        if ($mailer->send($message)) {
-            $this->status = true;
+            $html = $this->render($data);
 
-            $this->data = [
-                'title' => 'Сообщение',
-                'message' => 'Видео файл отправлен'
-            ];
-        } else {
+            $message->setBody($html, 'text/html');
+
+            $request = $mailer->send($message, $failures);
+
+            if ($request) {
+                $this->status = true;
+
+                $this->data = [
+                    'title' => 'Сообщение отправлено',
+                    'message' => 'Видео отправлено на адрес: ' . $this->post['email']
+                ];
+            } else {
+                if (!empty($failures)) {
+                    $this->data = [
+                        'title' => 'Сообщение не отправлено',
+                        'message' => 'Не верный адрес почты <span color="red">' . $failures[0] . '</span>'
+                    ];
+                }
+
+                $this->status = false;
+            }
+
+            $mailer->getTransport()->stop();
+
+        } catch (\Exception $e) {
             $this->status = false;
         }
 
@@ -212,26 +243,3 @@ class Api
         $this->response();
     }
 }
-
-// https://habrahabr.ru/post/351890/
-
-// GET: этот метод является безопасным и идемпотентным. Обычно используется для извлечения информации и не имеет побочных эффектов.
-// POST: этот метод не является ни безопасным, ни идемпотентным. Этот метод наиболее широко используется для создания ресурсов.
-// PUT: этот метод является идемпотентным. Вот почему лучше использовать этот метод вместо POST для обновления ресурсов. Избегайте использования POST для обновления ресурсов.
-// DELETE: как следует из названия, этот метод используется для удаления ресурсов. Но этот метод не является идемпотентным для всех запросов.
-// OPTIONS: этот метод не используется для каких-либо манипуляций с ресурсами. Но он полезен, когда клиент не знает других методов, поддерживаемых для ресурса, и используя этот метод, клиент может получить различное представление ресурса.
-// HEAD: этот метод используется для запроса ресурса c сервера. Он очень похож на метод GET, но HEAD должен отправлять запрос и получать ответ только в заголовке. Согласно спецификации HTTP, этот метод не должен использовать тело для запроса и ответа.
-
-// 200 OK — это ответ на успешные GET, PUT, PATCH или DELETE. Этот код также используется для POST, который не приводит к созданию.
-// 201 Created — этот код состояния является ответом на POST, который приводит к созданию.
-// 204 Нет содержимого. Это ответ на успешный запрос, который не будет возвращать тело (например, запрос DELETE)
-// 304 Not Modified — используйте этот код состояния, когда заголовки HTTP-кеширования находятся в работе
-// 400 Bad Request — этот код состояния указывает, что запрос искажен, например, если тело не может быть проанализировано
-// 401 Unauthorized — Если не указаны или недействительны данные аутентификации. Также полезно активировать всплывающее окно auth, если приложение используется из браузера
-// 403 Forbidden — когда аутентификация прошла успешно, но аутентифицированный пользователь не имеет доступа к ресурсу
-// 404 Not found — если запрашивается несуществующий ресурс
-// 405 Method Not Allowed — когда запрашивается HTTP-метод, который не разрешен для аутентифицированного пользователя
-// 410 Gone — этот код состояния указывает, что ресурс в этой конечной точке больше не доступен. Полезно в качестве защитного ответа для старых версий API
-// 415 Unsupported Media Type. Если в качестве части запроса был указан неправильный тип содержимого
-// 422 Unprocessable Entity — используется для проверки ошибок
-// 429 Too Many Requests — когда запрос отклоняется из-за ограничения скорости

@@ -7,6 +7,7 @@
 
 	<link rel="stylesheet" href="/static/css/base.css">
 	<link rel="stylesheet" href="/static/css/admin.css">
+	<link rel="stylesheet" href="/static/css/colorpicker.css" />
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
@@ -110,15 +111,53 @@
 
 					<label class="label">
 						<span class="label__name">Адрес папки с готовыми проектами</span>
+						<!-- <input name="pathname" type="file" id="file_input" webkitdirectory directory> -->
 						<input name="pathname" class="input" placeholder="Путь к папке..." value="<?= escape($this->params['pathname']); ?>">
 					</label>
 
-					<!--
-					<label class="label">
-						<span class="label__name">Адрес папки с фото</span>
-						<input name="" class="input" placeholder="Введите название...">
-					</label>
-					-->
+					<h2>Стилизация</h2>
+
+					<fieldset>
+						<legend>Основной контент</legend>
+
+						<div class="label">
+							<span class="label__name">Цвет фона</span>
+							<input name="style_body_bg" class="input input-color-picker j-color-picker" placeholder="Выберите цвет..." value="<?= escape($this->params['style_body_bg']); ?>">
+						</div>
+
+						<div class="label">
+							<span class="label__name">Цвет текста</span>
+							<input name="style_body_text" class="input input-color-picker j-color-picker" placeholder="Выберите цвет..." value="<?= escape($this->params['style_body_text']); ?>">
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend>Левая колонка</legend>
+
+						<div class="label">
+							<span class="label__name">Цвет фона</span>
+							<input name="style_sidebar_bg" class="input input-color-picker j-color-picker" placeholder="Выберите цвет..." value="<?= escape($this->params['style_sidebar_bg']); ?>">
+						</div>
+
+						<div class="label">
+							<span class="label__name">Цвет текста</span>
+							<input name="style_sidebar_text" class="input input-color-picker j-color-picker" placeholder="Выберите цвет..." value="<?= escape($this->params['style_sidebar_text']); ?>">
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend>Кнопки отправки</legend>
+
+						<div class="label">
+							<span class="label__name">Цвет фона</span>
+							<input name="style_button_bg" class="input input-color-picker j-color-picker" placeholder="Выберите цвет..." value="<?= escape($this->params['style_button_bg']); ?>">
+						</div>
+
+						<div class="label">
+							<span class="label__name">Цвет текста</span>
+							<input name="style_button_text" class="input input-color-picker j-color-picker" placeholder="Выберите цвет..." value="<?= escape($this->params['style_button_text']); ?>">
+						</div>
+					</fieldset>
 
 					<h2>Параметры входа в админку</h2>
 
@@ -134,48 +173,58 @@
 
 					<h2>Параметры почты</h2>
 
-					<label class="label">
-						<span class="label__name">Кнопка теста</span>
-						<input name="send_button" class="input" placeholder="Введите текст кнопки..." value="<?= escape($this->params['send_button']); ?>">
-					</label>
+					<fieldset>
+						<legend>Общие настройки</legend>
 
-					<label class="label">
-						<span class="label__name">Тема сообщения</span>
-						<input name="send_subject" class="input" placeholder="Введите тему сообщения..." value="<?= escape($this->params['send_subject']); ?>">
-					</label>
+						<label class="label">
+							<span class="label__name">Кнопка теста</span>
+							<input name="send_button" class="input" placeholder="Введите текст кнопки..." value="<?= escape($this->params['send_button']); ?>">
+						</label>
 
-					<label class="label">
-						<span class="label__name">Адрес отправителя</span>
-						<input name="send_email" class="input" placeholder="Введите ардес с которого будет идти отправка..." value="<?= escape($this->params['send_email']); ?>">
-					</label>
+						<label class="label">
+							<span class="label__name">Номер фото для отправки</span>
+							<input name="send_photo_number" class="input input--number" placeholder="Например: 06" value="<?= escape($this->params['send_photo_number']); ?>">
+						</label>
 
-					<label class="label">
-						<span class="label__name">Имя отправителя</span>
-						<input name="send_name" class="input" placeholder="Введите имя отправка..." value="<?= escape($this->params['send_name']); ?>">
-					</label>
+						<label class="label">
+							<span class="label__name">Тема сообщения</span>
+							<input name="send_subject" class="input" placeholder="Введите тему сообщения..." value="<?= escape($this->params['send_subject']); ?>">
+						</label>
 
-					<label class="label">
-						<span class="label__name">Пароль</span>
-						<input name="send_password" class="input input--password" placeholder="Введите пароль для почты..." value="<?= escape($this->params['send_password']); ?>">
-					</label>
+						<label class="label">
+							<span class="label__name">Подпись в письме</span>
+							<textarea name="send_signature" id="" cols="30" rows="10" class="textarea"><?= escape($this->params['send_signature']); ?></textarea>
+						</label>
+					</fieldset>
 
-					<label class="label">
-						<span class="label__name">SMTP</span>
-						<input name="send_server" class="input input--short" placeholder="Введите сервер для отправки почты..." value="<?= escape($this->params['send_server']); ?>">
-					</label>
+					<fieldset>
+						<legend>Настройки отправителя</legend>
 
-					<label class="label">
-						<span class="label__name">Port</span>
-						<input name="send_port" class="input input--number" placeholder="Введите порт отправки почты..." value="<?= escape($this->params['send_port']); ?>">
-					</label>
+						<label class="label">
+							<span class="label__name">Имя отправителя</span>
+							<input name="send_name" class="input" placeholder="Введите имя отправка..." value="<?= escape($this->params['send_name']); ?>">
+						</label>
 
-					<label class="label">
-						<span class="label__name">Подпись в письме</span>
-						<textarea name="send_signature" id="" cols="30" rows="10" class="textarea"><?= escape($this->params['send_signature']); ?></textarea>
-					</label>
+						<label class="label">
+							<span class="label__name">Адрес отправителя</span>
+							<input name="send_email" class="input" placeholder="Введите ардес с которого будет идти отправка..." value="<?= escape($this->params['send_email']); ?>">
+						</label>
 
-					<?php /*
-					*/ ?>
+						<label class="label">
+							<span class="label__name">SMTP</span>
+							<input name="send_server" class="input input--short" placeholder="Введите сервер для отправки почты..." value="<?= escape($this->params['send_server']); ?>">
+						</label>
+
+						<label class="label">
+							<span class="label__name">Пароль</span>
+							<input name="send_password" class="input input--password" placeholder="Введите пароль для почты..." value="<?= escape($this->params['send_password']); ?>">
+						</label>
+
+						<label class="label">
+							<span class="label__name">Port</span>
+							<input name="send_port" class="input input--number" placeholder="Введите порт отправки почты..." value="<?= escape($this->params['send_port']); ?>">
+						</label>
+					</fieldset>
 
 					<button type="submit" class="button-submit">Сохранить</button>
 				</form>
@@ -213,6 +262,7 @@
 </div>
 
 <script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/colorpicker.js"></script>
 <script src="/static/js/admin.js"></script>
 
 </body>

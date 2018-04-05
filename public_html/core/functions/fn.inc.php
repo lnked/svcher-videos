@@ -12,7 +12,7 @@ function _scan($dir)
 	return array_diff(scandir($dir), [ '.', '..', '.DS_Store', '.gitkeep', '.gitignore' ]);
 }
 
-function _scannode($source, $name, $mode = 'video')
+function _scannode($source, $name, $mode = 'video', $base_name = '01')
 {
     $dir = $source.DS.$name;
 
@@ -44,7 +44,20 @@ function _scannode($source, $name, $mode = 'video')
             if ($file == 'images' && is_dir($dir.DS.$file))
             {
                 $images = _scan($dir.DS.$file);
-                $shift_image = array_shift($images);
+
+                if ($base_name) {
+                    foreach($images as $image) {
+                        $temp = explode('_', $image);
+
+                        if (isset($temp[1]) && $temp[1] == $base_name) {
+                            $shift_image = $image;
+                        };
+                    }
+                }
+
+                if (!$base_name || !isset($shift_image)) {
+                    $shift_image = array_shift($images);
+                }
 
                 if (is_image($shift_image))
                 {

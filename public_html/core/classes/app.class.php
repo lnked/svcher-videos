@@ -75,6 +75,10 @@ class App
 
 	private function loadData()
 	{
+		if ($this->page == 'statistic') {
+			$this->statistics = Q("SELECT * FROM `statistics`")->all();
+		}
+
 		$sample = [
 			'event_name',
 			'logo',
@@ -90,9 +94,17 @@ class App
 			'send_name',
 			'send_subject',
 			'send_signature',
+			'send_photo_number',
+			'style_body_bg',
+			'style_body_text',
+			'style_sidebar_bg',
+			'style_sidebar_text',
+			'style_button_bg',
+			'style_button_text',
 		];
 
 		$data = [];
+
 		$result = Q("SELECT * FROM `settings`")->all();
 
 		if (!empty($result)) {
@@ -101,11 +113,11 @@ class App
 			}
 		}
 
-		$this->params = $data;
+		$pure = array_fill_keys(array_values($sample), '');
 
-		if ($this->page == 'statistic') {
-			$this->statistics = Q("SELECT * FROM `statistics`")->all();
-		}
+		$data = array_merge($data, array_diff_key($pure, $data));
+
+		$this->params = $data;
 	}
 
 	private function updateData($post = [], $files = [])
@@ -157,6 +169,10 @@ class App
 
 	public function terminate()
 	{
+		// $api = new Api();
+		// $api->sendMessage();
+		// exit;
+
 		$this->loadData();
 		$this->render();
 	}
