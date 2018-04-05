@@ -188,6 +188,10 @@
             	title: response.title,
             	message: response.message
             });
+
+            setTimeout(function() {
+            	Modal.close(d.querySelectorAll('.popup-mesage.is-open'));
+            }, 2000);
         }
     }
 
