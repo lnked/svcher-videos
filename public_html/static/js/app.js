@@ -122,9 +122,7 @@
 
 	function startCycle()
 	{
-		current = 0;
 		playItem();
-
 		startInterval();
 	}
 
