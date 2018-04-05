@@ -7,9 +7,9 @@
 	    alert(Folder[0]);
 	}
 
-	$(window).bind("beforeunload", function() {
-	    return confirm("Закрыть?");
-	});
+	// $(window).bind("beforeunload", function() {
+	//     return confirm("Закрыть?");
+	// });
 
 	$('#button-remove-logo').on('click', function(e) {
 		e.preventDefault();

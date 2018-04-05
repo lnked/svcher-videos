@@ -48,14 +48,20 @@
 
 		<header class="header">
 			<div class="header__wrapper">
-				<div class="header__title">Администрирование, <a href="/">на сайт</a></div>
+				<div class="header__group">
+					<div class="header__title">Администрирование</div>
+					<a href="/" class="header__link">на сайт</a>
+					<a href="/admin/settings" class="header__link<?php if ($this->page == 'settings'): ?> header__link--current<?php endif; ?>">Настройки</a>
+					<a href="/admin/statistic" class="header__link<?php if ($this->page == 'statistic'): ?> header__link--current<?php endif; ?>">Статистика</a>
+				</div>
 				<a href="/admin/logout" class="button-logout">Выйти</a>
 			</div>
 		</header>
 
         <div class="container">
         	<main class="content" id="content">
-				<form action="" method="POST" enctype="multipart/form-data">
+        		<?php if ($this->page == 'settings'): ?>
+        		<form action="" method="POST" enctype="multipart/form-data">
 					<label class="label">
 						<span class="label__name">Наименование мероприятия</span>
 						<input name="event_name" class="input" placeholder="Введите название..." value="<?= escape($this->params['event_name']); ?>">
@@ -173,6 +179,32 @@
 
 					<button type="submit" class="button-submit">Сохранить</button>
 				</form>
+				<?php elseif ($this->page == 'statistic'): ?>
+				<table>
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Дата отправки</th>
+							<th>Сессия</th>
+							<th>Имя</th>
+							<th>E-mail</th>
+							<th>Номер телефона</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach($this->statistics as $item): ?>
+						<tr>
+							<td><?= $item['id']; ?></td>
+							<td><?= date('d.m.Y H:i', $item['datetime']); ?></td>
+							<td><?= $item['session']; ?></td>
+							<td><?= $item['name']; ?></td>
+							<td><?= $item['email']; ?></td>
+							<td><?= $item['phone']; ?></td>
+						</tr>
+					<?php endforeach; ?>
+					</tbody>
+       			</table>
+				<?php endif; ?>
 	        </main>
         </div>
 

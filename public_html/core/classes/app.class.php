@@ -2,10 +2,12 @@
 
 class App
 {
+    public $page = '';
     public $path = [];
     public $data = [];
     public $params = [];
     public $userData = [];
+    public $statistics = [];
 
     protected $url = null;
     protected $query = null;
@@ -25,6 +27,10 @@ class App
 
         if (isset($this->path[0]) && $this->path[0] == 'admin') {
         	$this->is_admin = true;
+
+        	if (isset($this->path[1])) {
+        		$this->page = $this->path[1];
+        	}
         }
 
         if ($this->is_admin && count($_POST)) {
@@ -43,6 +49,10 @@ class App
 
         if (!empty($_SESSION['userData'])) {
     		$this->userData = $_SESSION['userData'];
+
+    		if ($this->is_admin && !isset($this->path[1])) {
+    			redirect('/admin/settings', 301);
+        	}
     	}
 	}
 
@@ -92,6 +102,10 @@ class App
 		}
 
 		$this->params = $data;
+
+		if ($this->page == 'statistic') {
+			$this->statistics = Q("SELECT * FROM `statistics`")->all();
+		}
 	}
 
 	private function updateData($post = [], $files = [])
