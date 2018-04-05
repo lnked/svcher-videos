@@ -229,30 +229,57 @@
 					<button type="submit" class="button-submit">Сохранить</button>
 				</form>
 				<?php elseif ($this->page == 'statistic'): ?>
-				<table>
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Дата отправки</th>
-							<th>Сессия</th>
-							<th>Имя</th>
-							<th>E-mail</th>
-							<th>Номер телефона</th>
-						</tr>
-					</thead>
-					<tbody>
-					<?php foreach($this->statistics as $item): ?>
-						<tr>
-							<td><?= $item['id']; ?></td>
-							<td><?= date('d.m.Y H:i', $item['datetime']); ?></td>
-							<td><?= $item['session']; ?></td>
-							<td><?= $item['name']; ?></td>
-							<td><?= $item['email']; ?></td>
-							<td><?= $item['phone']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-					</tbody>
-       			</table>
+				<form action="" method="POST">
+					<input type="hidden" name="action" value="extract-data">
+
+					<table>
+						<colgroup>
+							<col width="40">
+							<col width="40">
+							<col width="150">
+							<col width="150">
+							<col width="150">
+							<col>
+							<col width="150">
+						</colgroup>
+						<thead>
+							<tr>
+								<th>
+									<label class="ui-checkbox ui-checkbox--inline">
+				                        <input type="checkbox" value="1" class="ui-checkbox__input j-change-all">
+				                        <span class="ui-checkbox__visible" role="checkbox" aria-checked="false" tabindex="0"></span>
+				                    </label>
+								</th>
+								<th>#</th>
+								<th>Имя</th>
+								<th>E-mail</th>
+								<th>Номер телефона</th>
+								<th>Сессия</th>
+								<th>Дата отправки</th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php foreach($this->statistics as $item): ?>
+							<tr>
+								<td>
+									<label class="ui-checkbox ui-checkbox--inline">
+									    <input type="checkbox" name="change[]" value="<?= $item['id']; ?>" class="ui-checkbox__input j-change-item">
+									    <span class="ui-checkbox__visible" role="checkbox" aria-checked="false" tabindex="0"></span>
+									</label>
+								</td>
+								<td><?= $item['id']; ?></td>
+								<td><?= $item['name']; ?></td>
+								<td><?= $item['email']; ?></td>
+								<td><?= $item['phone']; ?></td>
+								<td><?= $item['session']; ?></td>
+								<td><?= date('d.m.Y H:i', $item['datetime']); ?></td>
+							</tr>
+						<?php endforeach; ?>
+						</tbody>
+	       			</table>
+
+	       			<button type="submit" class="button-submit">Выгрузить</button>
+	       		</form>
 				<?php endif; ?>
 	        </main>
         </div>

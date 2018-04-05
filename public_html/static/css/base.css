@@ -354,7 +354,6 @@ button {
     line-height:1.3
 }
 
-
 .ui-checkbox {
     font-size: 0;
     line-height: 1;
@@ -363,6 +362,13 @@ button {
     position: relative;
     display: inline-block;
     min-height: 18px;
+}
+
+.ui-checkbox--inline {
+    width: 18px;
+    height: 22px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .ui-checkbox__input {
@@ -393,28 +399,6 @@ button {
     background-color: #fff;
 }
 
-.ui-checkbox__visible--color {
-    border-radius: 0;
-    border: 1px solid #d5d5d5;
-}
-
-.ui-checkbox__visible--color:after {
-    left: 2px;
-    top: 3px;
-    width: 12px;
-    height: 8px;
-    content: "";
-    display: none;
-    position: absolute;
-    z-index: 1;
-    border-width: 0 0 4px 4px;
-    pointer-events: none;
-    border-image: none;
-    border-color: #fff;
-    border-style: solid;
-    transform: rotate(-45deg);
-}
-
 .ui-checkbox__visible:before {
     width: 10px;
     height: 6px;
@@ -430,30 +414,6 @@ button {
     border-style: solid;
     border-width: 0 0 2px 2px;
     transform: rotate(-45deg);
-}
-
-.ui-checkbox__visible--color:before {
-    border-color: #000;
-}
-
-.ui-checkbox__visible--big {
-    width: 32px;
-    height: 32px;
-}
-
-.ui-checkbox__visible--big:before {
-    left: 9px;
-    top: 8px;
-    width: 13px;
-    height: 9px;
-}
-
-.ui-checkbox__visible--big:after {
-    width: 15px;
-    height: 11px;
-    left: 8px;
-    top: 7px;
-    border-width: 0 0 4px 4px;
 }
 
 .ui-checkbox__input:checked + .ui-checkbox__visible {

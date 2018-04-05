@@ -123,14 +123,6 @@ class Api
             $send_photo = true;
         }
 
-        $this->addStatistics([
-            'datetime'  => time(),
-            'session'   => $session,
-            'name'      => $user_name,
-            'email'     => $user_email,
-            'phone'     => $user_phone
-        ]);
-
         $item = [
             'image' => $selected->poster,
             'video' => $selected->video
@@ -178,6 +170,15 @@ class Api
             $request = $mailer->send($message, $failures);
 
             if ($request) {
+
+                $this->addStatistics([
+                    'datetime'  => time(),
+                    'session'   => $session,
+                    'name'      => $user_name,
+                    'email'     => $user_email,
+                    'phone'     => $user_phone
+                ]);
+
                 $this->status = true;
 
                 $this->data = [

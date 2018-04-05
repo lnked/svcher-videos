@@ -4,6 +4,10 @@
 	//     return confirm("Закрыть?");
 	// });
 
+	$('body').on('change', '.j-change-all', function() {
+		$('.j-change-item').prop('checked', $(this).prop('checked'));
+	});
+
 	$('#button-remove-logo').on('click', function(e) {
 		e.preventDefault();
 

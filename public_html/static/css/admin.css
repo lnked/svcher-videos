@@ -147,12 +147,20 @@ table {
 	font-family: Arial, sans-serif;
 	font-size: 15px;
 	line-height: 1.4;
+	table-layout: fixed;
+	border-collapse: collapse;
+	margin-bottom: 20px;
 }
 
 table th, table td {
-	padding: 5px 10px;
+	padding: 7px 10px;
+	vertical-align: middle;
 }
 
 table thead th {
 	background-color: #ddd;
+}
+
+table tbody td {
+	border-bottom: 1px solid #ddd;
 }

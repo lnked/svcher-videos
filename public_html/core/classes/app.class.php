@@ -36,6 +36,9 @@ class App
         if ($this->is_admin && count($_POST)) {
         	if (isset($_POST['action']) && $_POST['action'] === 'auth-form') {
         		$this->authForm($_POST);
+        	}
+        	elseif (isset($_POST['action']) && $_POST['action'] === 'extract-data') {
+        		$this->extractData($_POST);
         	} else {
         		$this->updateData($_POST, $_FILES);
         	}
@@ -54,6 +57,49 @@ class App
     			redirect('/admin/settings', 301);
         	}
     	}
+	}
+
+	private function extractData($data = [])
+	{
+		if (!empty($data['change']))
+		{
+			$dataArray = Q("SELECT `name`, `email`, `phone`, `session` FROM `statistics` WHERE `id` IN (?li)", [
+				$data['change']
+			])->all();
+
+			array_unshift($dataArray, [
+				'name' => 'Имя',
+				'email' => 'Электронная почта',
+				'phone' => 'Номер телефона',
+				'session' => 'Сессия',
+			]);
+
+			// create php excel object
+			$doc = new PHPExcel();
+
+			// set active sheet
+			$doc->setActiveSheetIndex(0);
+
+			// read data to active sheet
+			$doc->getActiveSheet()->fromArray($dataArray);
+
+			//save our workbook as this file name
+			$filename = sprintf('Выгрузка от %s.xls', date('d.m.Y H:i'));
+
+			//mime type
+			header('Content-Type: application/vnd.ms-excel');
+			//tell browser what's the file name
+			header('Content-Disposition: attachment;filename="' . $filename . '"');
+
+			header('Cache-Control: max-age=0'); //no cache
+			//save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
+			//if you want to save it as .XLSX Excel 2007 format
+
+			$objWriter = PHPExcel_IOFactory::createWriter($doc, 'Excel5');
+
+			//force user to download the Excel file without writing it to server's HD
+			$objWriter->save('php://output');
+		}
 	}
 
 	private function authForm($data = [])
