@@ -27,12 +27,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Acme\\": "src/"
+            "Acme\\": "src/",
+            "PHPMailer\\PHPMailer\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Acme\\": "tests/"
+            "Acme\\": "tests/",
+            "PHPMailer\\Test\\": "test/"
         }
     },
     "minimum-stability": "dev",

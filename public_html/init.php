@@ -34,8 +34,7 @@ ini_set('session.use_only_cookies', '1');
 ini_set('session.gc_maxlifetime', '2678400');
 ini_set('session.cookie_lifetime', '2678400');
 
-if (!session_id())
-{
+if (!session_id()) {
     session_start([
         'cookie_secure' => false,
         'cookie_httponly' => true

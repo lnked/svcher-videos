@@ -3,11 +3,11 @@
 class App
 {
     public $page = '';
-    public $path = [];
-    public $data = [];
-    public $params = [];
-    public $userData = [];
-    public $statistics = [];
+    public $path = array();
+    public $data = array();
+    public $params = array();
+    public $userData = array();
+    public $statistics = array();
 
     protected $url = null;
     protected $query = null;
@@ -59,7 +59,7 @@ class App
     	}
 	}
 
-	private function extractData($data = [])
+	private function extractData($data = array())
 	{
 		if (!empty($data['change']))
 		{
@@ -67,12 +67,12 @@ class App
 				$data['change']
 			])->all();
 
-			array_unshift($dataArray, [
+			array_unshift($dataArray, array(
 				'name' => 'Имя',
 				'email' => 'Электронная почта',
 				'phone' => 'Номер телефона',
 				'session' => 'Сессия',
-			]);
+			));
 
 			// create php excel object
 			$doc = new PHPExcel();
@@ -102,7 +102,7 @@ class App
 		}
 	}
 
-	private function authForm($data = [])
+	private function authForm($data = array())
 	{
 		if (isset($data['login']) && $data['password']) {
 			$user = Q("SELECT `l`.`value` as `login`, `p`.`value` as `password` FROM `settings` as `l`
@@ -110,8 +110,7 @@ class App
 				WHERE (`l`.`system`='login' AND `l`.`value` LIKE 'admin')"
 			)->row();
 
-			if (!empty($user['login']) && !empty($user['password']))
-			{
+			if (!empty($user['login']) && !empty($user['password'])) {
 				$_SESSION['userData'] = $user;
 			}
 		}
@@ -125,7 +124,7 @@ class App
 			$this->statistics = Q("SELECT * FROM `statistics`")->all();
 		}
 
-		$sample = [
+		$sample = array(
 			'event_name',
 			'logo',
 			'mode',
@@ -147,9 +146,9 @@ class App
 			'style_sidebar_text',
 			'style_button_bg',
 			'style_button_text',
-		];
+		);
 
-		$data = [];
+		$data = array();
 
 		$result = Q("SELECT * FROM `settings`")->all();
 
@@ -166,7 +165,7 @@ class App
 		$this->params = $data;
 	}
 
-	private function updateData($post = [], $files = [])
+	private function updateData($post = array(), $files = array())
 	{
 		if (!empty($files)) {
 			$dir = PATH_ROOT.DS.'cache';
@@ -183,18 +182,18 @@ class App
 
 		if (!empty($post)) {
 			foreach ($post as $name => $value) {
-				$count = Q("SELECT COUNT(`id`) as `count` FROM `settings` WHERE `system` LIKE ?s LIMIT 1", [
+				$count = Q("SELECT COUNT(`id`) as `count` FROM `settings` WHERE `system` LIKE ?s LIMIT 1", array(
 					$name
-				])->row('count');
+				))->row('count');
 
 				if ($count) {
-					Q("UPDATE `settings` SET `value`=?s WHERE `system` LIKE ?s LIMIT 1", [
+					Q("UPDATE `settings` SET `value`=?s WHERE `system` LIKE ?s LIMIT 1", array(
 						$value, $name
-					]);
+					));
 				} else {
-					Q("INSERT INTO `settings` SET `system`=?s, `value`=?s", [
+					Q("INSERT INTO `settings` SET `system`=?s, `value`=?s", array(
 						$name, $value
-					]);
+					));
 				}
 
 				if ($name == 'pathname' && is_dir($value)) {

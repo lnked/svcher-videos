@@ -1,13 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class Api
 {
-    public $data = [];
+    public $data = array();
 
-    private $post = [];
+    private $post = array();
     private $action = '';
     private $status = false;
-    private $settings = [];
+    private $settings = array();
 
     public function __construct()
     {
@@ -22,7 +27,7 @@ class Api
     {
         $this->_settings();
 
-        $this->data = [];
+        $this->data = array();
         $this->data['videos'] = _scandir(PATH_ROOT.DS.'files', $this->settings['mode']);
         $this->status = true;
 
@@ -44,7 +49,7 @@ class Api
         $this->status = true;
     }
 
-    private function render($data = [])
+    private function renderView($data = array())
     {
         extract($data);
 
@@ -57,34 +62,35 @@ class Api
 
     private function addStatistics($data)
     {
-        Q("INSERT INTO `statistics` SET `datetime`=?i, `session`=?s, `name`=?s, `email`=?s, `phone`=?s", [
+        Q("INSERT INTO `statistics` SET `datetime`=?i, `session`=?s, `name`=?s, `email`=?s, `phone`=?s", array(
             $data['datetime'],
             $data['session'],
             $data['name'],
             $data['email'],
             $data['phone'],
-        ]);
+        ));
     }
 
     public function sendMessage()
     {
         $this->_settings();
 
-        $errors = [];
+        $errors = array();
 
-        $required = [
+        $required = array(
             'name',
             'phone',
             'email',
             'session'
-        ];
+        );
 
-        // $this->post = [
+        // $this->post = array(
         //     'name' => 'ed',
         //     'phone' => '+7 988 666 77 66',
-        //     'email' => 'qwdf@23e.er',
+        //     'email' => 'ed.proff@gmail.com',
         //     'session' => 'session_2018_04_01_13_43_21',
-        // ];
+        //     'photo' => true
+        // );
 
         foreach ($required as $name)
         {
@@ -102,9 +108,9 @@ class Api
         {
             $this->status = false;
 
-            $this->data = [
+            $this->data = array(
                 'errors' => $errors
-            ];
+            );
 
             return;
         }
@@ -123,91 +129,91 @@ class Api
             $send_photo = true;
         }
 
-        $item = [
+        $item = array(
             'image' => $selected->poster,
             'video' => $selected->video
-        ];
+        );
 
-        $data = [
+        $data = array(
             'item' => $item,
-            'settings' => $this->settings
-        ];
+            'settings' => $this->settings,
+            'send_photo' => $send_photo
+        );
 
         $emails[$user_email] = $user_name;
 
-        try {
-            // Create the Transport
-            $transport = (new Swift_SmtpTransport($this->settings['send_server'], $this->settings['send_port'], 'ssl'))
-                ->setUsername($this->settings['send_email'])
-                ->setPassword($this->settings['send_password'])
-            ;
+        // Create the Transport
+        $transport = (new Swift_SmtpTransport($this->settings['send_server'], $this->settings['send_port'], 'ssl'))
+            ->setUsername($this->settings['send_email'])
+            ->setPassword($this->settings['send_password'])
+        ;
 
-            // Create the Mailer using your created Transport
-            $mailer = new Swift_Mailer($transport);
+        // Create the Mailer using your created Transport
+        $mailer = new Swift_Mailer($transport);
 
-            // Create a message
-            $message = (new Swift_Message())
-                ->setSubject($this->settings['send_subject'])
-                ->setFrom([
-                    $this->settings['send_email'] => $this->settings['send_name']
-                ])
-                ->setTo($emails)
-            ;
+        $message = (new Swift_Message())
+            ->setSubject($this->settings['send_subject'])
+            ->setFrom([$this->settings['send_email'] => $this->settings['send_name']])
+            ->setTo($emails)
+        ;
 
-            $data['logo'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$this->settings['logo']));
-            $data['video'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['video']));
+        // $attachment_video = \Swift_Attachment::fromPath(
+        //     PATH_ROOT.$item['video'], 'video/mp4'
+        // );
 
-            $data['send_photo'] = $send_photo;
+        // $attachment_image = \Swift_Attachment::fromPath(
+        //     PATH_ROOT.$item['image'], 'image/jpg'
+        // );
 
-            if ($send_photo) {
-                $data['image'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['image']));
+        // $message
+        //     ->attach($attachment_video)
+        //     ->attach($attachment_image)
+        // ;
+
+        $data['logo'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$this->settings['logo']));
+        $data['video'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['video']));
+
+        if ($send_photo) {
+            $data['image'] = $message->embed(Swift_Image::fromPath(PATH_ROOT.$item['image']));
+        }
+
+        $message->setBody($this->renderView($data), 'text/html');
+
+        if ($mailer->send($message, $failures)) {
+
+            $this->addStatistics(array(
+                'datetime'  => time(),
+                'session'   => $session,
+                'name'      => $user_name,
+                'email'     => $user_email,
+                'phone'     => $user_phone
+            ));
+
+            $this->status = true;
+
+            $this->data = array(
+                'title' => 'Сообщение отправлено',
+                'message' => 'Видео отправлено на адрес: ' . $this->post['email']
+            );
+        } else {
+            if (!empty($failures)) {
+                $this->data = array(
+                    'title' => 'Сообщение не отправлено',
+                    'message' => 'Не верный адрес почты <span color="red">' . $failures[0] . '</span>'
+                );
             }
 
-            $html = $this->render($data);
-
-            $message->setBody($html, 'text/html');
-
-            $request = $mailer->send($message, $failures);
-
-            if ($request) {
-
-                $this->addStatistics([
-                    'datetime'  => time(),
-                    'session'   => $session,
-                    'name'      => $user_name,
-                    'email'     => $user_email,
-                    'phone'     => $user_phone
-                ]);
-
-                $this->status = true;
-
-                $this->data = [
-                    'title' => 'Сообщение отправлено',
-                    'message' => 'Видео отправлено на адрес: ' . $this->post['email']
-                ];
-            } else {
-                if (!empty($failures)) {
-                    $this->data = [
-                        'title' => 'Сообщение не отправлено',
-                        'message' => 'Не верный адрес почты <span color="red">' . $failures[0] . '</span>'
-                    ];
-                }
-
-                $this->status = false;
-            }
-
-            $mailer->getTransport()->stop();
-
-        } catch (\Exception $e) {
             $this->status = false;
         }
+
+        $mailer->getTransport()->stop();
 
         $this->response();
     }
 
     private function _settings()
     {
-        $data = [];
+        $data = array();
         $result = Q("SELECT * FROM `settings`")->all();
 
         if (!empty($result)) {

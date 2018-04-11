@@ -89,45 +89,47 @@
 
 	<template id="tmpl-send-message">
 		<div class="modal" aria-hidden="true" tabindex="-1" id="send-message">
-			<form action="/api/send-message" method="POST" class="modal__dialog j-ajax-form">
-				<button type="button" class="modal__close j-close-modal" data-target="#send-message"></button>
+			<form action="/api/send-message" method="POST" class="modal__dialog modal__dialog--preload is-active j-ajax-form">
+				<div class="modal__dialog__content">
+					<button type="button" class="modal__close j-close-modal" data-target="#send-message"></button>
 
-				<input type="hidden" name="session" value="{{ session }}">
+					<input type="hidden" name="session" value="{{ session }}">
 
-				<div class="modal__header">
-					<div class="modal__title">Отправить видео</div>
-				</div>
+					<div class="modal__header">
+						<div class="modal__title">Отправить видео</div>
+					</div>
 
-				<div class="modal__body">
-					<label class="label">
-						<span class="label__name">Имя</span>
-						<input name="name" class="input">
-					</label>
+					<div class="modal__body">
+						<label class="label">
+							<span class="label__name">Имя</span>
+							<input name="name" class="input">
+						</label>
 
-					<label class="label">
-						<span class="label__name">Номер телефона</span>
-						<input name="phone" id="send-phone" class="input">
-					</label>
+						<label class="label">
+							<span class="label__name">Номер телефона</span>
+							<input name="phone" id="send-phone" class="input">
+						</label>
 
-					<label class="label">
-						<span class="label__name">Электронная почта</span>
-						<input name="email" id="send-email" class="input">
-					</label>
+						<label class="label">
+							<span class="label__name">Электронная почта</span>
+							<input name="email" id="send-email" class="input">
+						</label>
 
-					<label class="ui-checkbox">
-                        <input type="checkbox" name="photo" value="1" class="ui-checkbox__input" checked>
-                        <span class="ui-checkbox__visible" role="checkbox" aria-checked="false" tabindex="0"> </span>
-                        <span class="ui-checkbox__label">
-                            <span class="ui-checkbox__label__middle">Добавить фотографию в письмо</span>
-                        </span>
-                    </label>
-				</div>
+						<label class="ui-checkbox">
+	                        <input type="checkbox" name="photo" value="1" class="ui-checkbox__input" checked>
+	                        <span class="ui-checkbox__visible" role="checkbox" aria-checked="false" tabindex="0"> </span>
+	                        <span class="ui-checkbox__label">
+	                            <span class="ui-checkbox__label__middle">Добавить фотографию в письмо</span>
+	                        </span>
+	                    </label>
+					</div>
 
-				<div class="modal__footer">
-					<button type="reset" class="button-reset j-close-modal" data-target="#send-message">
-						<span class="button-reset__underline">Отменить</span>
-					</button>
-					<button type="submit" class="button-submit" style="background-color: <?= $this->params['style_button_bg']; ?>; color: <?= $this->params['style_button_text']; ?>;">Отправить</button>
+					<div class="modal__footer">
+						<button type="reset" class="button-reset j-close-modal" data-target="#send-message">
+							<span class="button-reset__underline">Отменить</span>
+						</button>
+						<button type="submit" class="button-submit" style="background-color: <?= $this->params['style_button_bg']; ?>; color: <?= $this->params['style_button_text']; ?>;">Отправить</button>
+					</div>
 				</div>
 			</form>
 		</div>
