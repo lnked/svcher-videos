@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php
 
 error_reporting(E_ALL | E_STRICT);
 
@@ -35,14 +35,13 @@ ini_set('session.gc_maxlifetime', '2678400');
 ini_set('session.cookie_lifetime', '2678400');
 
 if (!session_id()) {
-    session_start([
+    session_start(array(
         'cookie_secure' => false,
         'cookie_httponly' => true
-    ]);
+    ));
 }
 
-if (extension_loaded('zlib'))
-{
+if (extension_loaded('zlib')) {
     ini_set("zlib.output_compression", "On");
     ini_set('zlib.output_compression_level', "7");
 }
