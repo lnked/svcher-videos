@@ -260,7 +260,7 @@
 						</thead>
 						<tbody>
 						<?php foreach($this->statistics as $item): ?>
-							<tr>
+							<tr id="statistic-element-<?= $item['id']; ?>">
 								<td>
 									<label class="ui-checkbox ui-checkbox--inline">
 									    <input type="checkbox" name="change[]" value="<?= $item['id']; ?>" class="ui-checkbox__input j-change-item">
@@ -279,6 +279,7 @@
 	       			</table>
 
 	       			<button type="submit" class="button-submit">Выгрузить</button>
+					<button type="button" class="button-remove" id="button-remove">Удалить выбранные</button>
 	       		</form>
 				<?php endif; ?>
 	        </main>

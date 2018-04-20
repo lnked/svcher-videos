@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f0a023fe914def54fbab3f429cb8d33",
+    "content-hash": "89881339d0d47c89b478eb98a3cab7e1",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -360,6 +360,45 @@
                 "url"
             ],
             "time": "2017-03-20T17:10:46+00:00"
+        },
+        {
+            "name": "hbattat/verifyemail",
+            "version": "v1.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hbattat/verifyEmail.git",
+                "reference": "4ec9ae613aee2be33239b9b7efb8de5383ae0c98"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hbattat/verifyEmail/zipball/4ec9ae613aee2be33239b9b7efb8de5383ae0c98",
+                "reference": "4ec9ae613aee2be33239b9b7efb8de5383ae0c98",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.27"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "hbattat\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache"
+            ],
+            "authors": [
+                {
+                    "name": "Sam Battat",
+                    "email": "hbattat@msn.com"
+                }
+            ],
+            "description": "PHP class that can be easily used to verify an email address and make sure it is valid and does exist on the mail server.",
+            "time": "2017-10-28T09:39:30+00:00"
         },
         {
             "name": "intervention/image",

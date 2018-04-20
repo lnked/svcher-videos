@@ -8,6 +8,7 @@
         }
     ],
     "require": {
+        "hbattat/verifyemail": "^1.0",
         "intervention/image": "^2.4",
         "lnked/pubsub": "dev-master",
         "lnked/q": "dev-master",

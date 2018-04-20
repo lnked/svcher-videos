@@ -4,8 +4,35 @@
 	//     return confirm("Закрыть?");
 	// });
 
+	$buttonRemove = $('#button-remove');
+
 	$('body').on('change', '.j-change-all', function() {
-		$('.j-change-item').prop('checked', $(this).prop('checked'));
+		const checked = $(this).prop('checked');
+		$('.j-change-item').prop('checked', checked);
+		$buttonRemove.toggleClass('is-active', checked);
+	});
+
+	$('body').on('change', '.j-change-item', function() {
+		const checked = $(this).prop('checked');
+		$buttonRemove.toggleClass('is-active', !!($('.j-change-item:checked').length));
+	});
+
+	$buttonRemove.on('click', function(e) {
+		e.preventDefault();
+
+		$('.j-change-item:checked').each(function(index, item) {
+			const id = $(item).val();
+
+			$.ajax({
+	            url: `/api/remove-statistic/${id}`,
+	            type: 'POST',
+	            success: function(response)
+	            {
+			    	$(`#statistic-element-${id}`).remove();
+			    	$buttonRemove.removeClass('is-active');
+			    }
+	        });
+		});
 	});
 
 	$('#button-remove-logo').on('click', function(e) {
@@ -13,7 +40,7 @@
 
 		$.ajax({
             url: '/api/remove-logo',
-            type: 'post',
+            type: 'POST',
             processData: false,
             success: function(response)
 		    {

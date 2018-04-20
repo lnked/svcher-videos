@@ -125,9 +125,10 @@
 					</div>
 
 					<div class="modal__footer">
-						<button type="reset" class="button-reset j-close-modal" data-target="#send-message">
+						<button type="button" class="button-reset j-close-modal" data-target="#send-message">
 							<span class="button-reset__underline">Отменить</span>
 						</button>
+
 						<button type="submit" class="button-submit" style="background-color: <?= $this->params['style_button_bg']; ?>; color: <?= $this->params['style_button_text']; ?>;">Отправить</button>
 					</div>
 				</div>
@@ -163,7 +164,7 @@
 	        		<div id="player-gif" class="video-gif"></div>
 	        	<?php else: ?>
 	        		<!-- controls -->
-	        		<video id="player-video" class="video-js vjs-default-skin" preload="auto" data-setup='{"width":auto,"height":auto,"fluid":true,"aspectRatio":"4:3"}'></video>
+	        		<video id="player-video" class="video-js vjs-default-skin" preload="auto" loop data-setup='{"width":auto,"height":auto,"fluid":true,"aspectRatio":"4:3"}'></video>
 	        	<?php endif; ?>
 
 	 			<!-- j-open-modal -->

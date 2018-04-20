@@ -11,6 +11,7 @@ class Api
 
     private $post = array();
     private $action = '';
+    private $element = null;
     private $status = false;
     private $settings = array();
 
@@ -19,7 +20,13 @@ class Api
         $this->post = $_POST;
 
         if (isset($_GET['_d'])) {
-            $this->action = $this->prepare($_GET['_d']);
+            $path = preg_split('/\/+/', $_GET['_d'], -1, PREG_SPLIT_NO_EMPTY);
+
+            if (isset($path[1])) {
+                $this->element = $path[1];
+            }
+
+            $this->action = $this->prepare($path[0]);
         }
     }
 
@@ -47,6 +54,15 @@ class Api
         ]);
 
         $this->status = true;
+    }
+
+    public function removeStatistic()
+    {
+        if ($this->element && $this->element !== null) {
+            Q("DELETE FROM `statistics` WHERE `id`=?i LIMIT 1", array(
+                $this->element
+            ));
+        }
     }
 
     private function renderView($data = array())
