@@ -2,11 +2,13 @@
 
     Modal.init();
 
+	window.current = 0;
+
 	var hasStarted = false;
 
 	var $player = null;
 	var interval = null;
-	var timeout = 10000;
+	var timeout = 3000;
 	var playTimeout = baseTimeout * 1000;
 
 	var $sidebar = $('#sidebar');
@@ -14,7 +16,6 @@
 	var $sendButton = $('#send-video');
 
 	var virtual = [];
-	var current = 0;
 
 	var scrollHeight = Math.max(
 		b.scrollHeight, document.documentElement.scrollHeight,
@@ -40,7 +41,7 @@
 		pauseVideo();
 
         Modal.show('tmpl-send-message', {
-        	session: virtual[current].name
+        	session: virtual[window.current].name
         });
 
         $('#send-phone').mask('+7 (999) 999-99-99');
@@ -94,11 +95,11 @@
 
 	function setActive(callback)
 	{
-		var top = virtual[current].offset - 20;
+		var top = virtual[window.current].offset - 20;
 
 		$sidebar.animate({'scrollTop': top}, 'medium');
 
-		$sidebar.find('.j-play-video').eq(current).addClass('is-active');
+		$sidebar.find('.j-play-video').eq(window.current).addClass('is-active');
 
 		callback();
 	}
@@ -107,9 +108,9 @@
 	{
 		clearActive();
 
-		if (typeof (virtual[current]) !== 'undefined')
+		if (typeof (virtual[window.current]) !== 'undefined')
 		{
-			var item = virtual[current];
+			var item = virtual[window.current];
 
 			setActive(function() {
 				if (mode === 'video') {
@@ -125,11 +126,11 @@
 
 	function playNext()
 	{
-		current++;
+		window.current++;
 
-		if (current >= virtual.length)
+		if (window.current >= virtual.length)
 		{
-			current = 0;
+			window.current = 0;
 		}
 
 		playItem();
@@ -216,9 +217,6 @@
     }
 
     $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
         dataType: 'JSON',
         contentType: false
     });
@@ -268,11 +266,11 @@
     });
 
     $('body').on('click', '.j-play-video', function(e){
-    	current = $sidebar.find($(this)).index();
+    	window.current = $sidebar.find($(this)).index();
     	startInterval();
     });
 
-    function renderData(videos) {
+    function renderData(videos, callback) {
     	var _count = Object.keys(videos).length;
 
     	$sidebar.find('.preloader').fadeOut().remove();
@@ -293,7 +291,7 @@
 			    		}
 			    	}));
 
-					$sidebar.append($videoItem);
+					$sidebar.prepend($videoItem);
 
 					virtual.push({
 						name: data.name,
@@ -301,6 +299,8 @@
 						poster: data.poster,
 						offset: $videoItem.offset().top
 					});
+
+					callback();
     			}
     		});
     	}
@@ -319,7 +319,10 @@
             processData: false,
             success: function(response) {
 				if (response.status) {
-					renderData(response.videos);
+					renderData(response.videos, function() {
+						window.current = 0;
+						startInterval();
+					});
 				}
 
 				if (!hasStarted) {

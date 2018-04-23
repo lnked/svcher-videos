@@ -1,0 +1,157 @@
+<!--- title=Параметры --->
+<!--- keywords=параметры --->
+<!--- description=Настройка параметров --->
+
+<style>
+
+	.m .c-title { text-align: center; font-weight: bold; padding: .5em 1em; }
+	.m .c-btn { text-align: right; }	
+	.m  textarea { width: 24em; }
+	.m .c-event { width: 24em; }
+	.m .c-subject { width: 24em; }
+	.m .c-port { width: 5em; }
+	.m .c-period { width: 5em; }
+	
+	.main-dlg { width: 37em; }
+	.main-dlg-body { padding: 1em; }
+	
+</style>
+
+<!---params_page()--->
+
+<div class="m">
+
+	<div class="align">	
+	
+		<h1>Настройка параметров</h1>
+	
+		<div class="msg"><!---msg---></div>
+		
+		<form method="post" action="<!---form.action--->">
+		
+			<input name="<!---PM.ID--->" value="<!---PM.PARAMS--->" type="hidden" />
+			<input name="<!---PM.ACT--->" value="<!---PM.ACT.VAL--->" type="hidden" />
+			<input name="<!---PM.STEP--->" value="<!---PM.STEP.VAL--->" type="hidden" />
+			
+			<table>
+				
+				<tr><td colspan="2" class="c-title">Параметры мероприятия</td></tr>
+				<tr><td>Наименование мероприятия</td><td><input name="event" type="text" value="<!---pm.event.val--->" class="c-event" /></td></tr>
+				<tr><td>Логотип</td><td><input name="logo" type="text" value="<!---pm.logo.val--->" /><button onclick="fm(event); return false;">...</button></td></tr>
+
+				<tr><td colspan="2" class="c-title">Параметры программы</td></tr>
+				<tr><td>Папка с готовыми проектами</td><td><input name="dir_video" type="text" value="<!---pm.dir_video.val--->" id="dir_video" fm_mode = '2' /><button onclick="fm(event); return false;">...</button></td></tr>
+				<tr><td>Режим работы</td><td><!---unit.mode---></td></tr>
+				<tr><td>Пароль</td><td><input name="pswd" type="password" value="<!---pm.pswd.val--->" /></td></tr>
+				<tr><td>Время просмотра, сек</td><td><input name="period" type="text" value="<!---pm.period.val--->" class="c-period" /></td></tr>
+				<tr><td>Отчет об отправках на дату</td><td><!---stat_dates(send_date)---> <button onclick="report_send(); return false;">Создать</button></td></tr>
+				<tr><td>Отчет о проектах на дату</td><td><!---proj_dates(create_date)---> <button onclick="report_create(); return false;">Создать</button></td></tr>
+				
+				<tr><td colspan="2" class="c-title">Параметры эл. почты</td></tr>
+				<tr><td>Адрес отправителя</td><td><input name="email_address" type="text" value="<!---pm.email_address.val--->" /></td></tr>
+				<tr><td>Пароль эл. ящика</td><td><input name="email_pswd" type="password" value="<!---pm.email_pswd.val--->" /></td></tr>
+				<tr><td>SMTP-сервер</td><td><input name="email_host" type="text" value="<!---pm.email_host.val--->" /></td></tr>
+				<tr><td>Порт</td><td><input name="email_port" type="text" value="<!---pm.email_port.val--->" class="c-port" /></td></tr>
+				
+				<tr><td>Тема письма</td><td><input name="email_subject" type="text" value="<!---pm.email_subject.val--->" class="c-subject" /></td></tr>
+				<tr><td>Текст письма</td><td><textarea name="email_text"><!---pm.email_text.val---></textarea></td></tr>
+				<tr><td>Подпись в письме</td><td><textarea name="email_sign"><!---pm.email_sign.val---></textarea></td></tr>
+				<tr><td>Адрес для тестирования</td><td><input name="email_address_test" type="text" value="<!---pm.email_address_test.val--->" /></td></tr>
+				<tr><td>Тестировать эл. почту</td><td><button onclick="test_mail(event); return false;">Старт</button></td></tr>
+				
+				<tr><td colspan="2" class="c-btn"><button onclick="logout();">Выход</button> <button>Сохранить</button></td></tr>
+
+			</table>
+
+		</form>
+	</div>
+
+</div>
+
+<script>
+
+	function logout()
+	{
+		$('input[name="<!---PM.ID--->"]').val('<!---PM.LOGIN--->'); 
+		$('input[name="<!---PM.STEP--->"]').val('2');  
+	}
+	
+	function select_path(sel_in)
+	{
+		var path = $('.fm-select').length ? $('.fm-select').attr('fm_path') : $('input[name="path"]').val();			
+		$(sel_in).val(path);
+	}
+	
+	function fm(sel_in, filter_in)
+	{
+		var id, data = {}, url = window.location.href, filter = filter_in;
+		
+		data['<!---PM.ID--->'] = '<!---pm.fm--->';
+		data['rt'] = 1;
+
+		if(typeof(sel_in) == 'object')
+		{
+			var target = sel_in.target || sel_in.srcElement;
+			var el = $(target).prev('input[type="text"]');
+			var path = el.val();
+			var id = el.attr('id');
+			
+			if(!filter)
+				filter = el.attr('fm_mode');
+			
+			data['path'] = path;
+
+			if(!id)
+			{
+				id = uniqid();
+				el.attr('id', id);
+			}			
+			id = '#' + id;
+		}
+		else
+			id = sel_in;
+			
+		if(filter)
+			data['filter'] = filter;
+			
+		dlg({ url: url, data: data, title: (filter & 6 ? 'Выбор папки' : 'Выбор файла'), onclose: 'select_path(\'' + id + '\')' }); 
+	}
+	
+	function report_send()
+	{
+		var date = $('select[name="send_date"]').val();		
+		var data = {}, url = window.location.href;
+		
+		data['<!---PM.ID--->'] = '<!---pm.report--->';
+		data['rt'] = 1;
+		data['date'] = date;
+
+		//console.log(url + "!!!");
+		console.log('<!---pm.report--->' + ' ' + '<!---PM.ID--->');
+
+		dlg({ url: url, data: data, title: 'Отчет об отправках' });
+	}
+	
+	function report_create()
+	{
+		var date = $('select[name="create_date"]').val();
+		var data = {}, url = window.location.href;
+		
+		data['<!---PM.ID--->'] = '<!---pm.report.create--->';
+		data['rt'] = 1;
+		data['date'] = date;		
+
+		dlg({ url: url, data: data, title: 'Отчет о проектах' });
+	}
+	
+	function test_mail()
+	{
+		var data = {}, url = window.location.href;
+		
+		data['<!---PM.ID--->'] = '<!---pm.test.mail--->';
+		data['rt'] = 1;
+		
+		dlg({ url: url, data: data, title: 'Тестирование эл. почты' }); 
+	}
+	
+</script>

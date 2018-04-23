@@ -1,0 +1,19 @@
+h1, h2, h3, h4 { color: #555; margin-bottom: 1em; }
+
+h1 { font-size: 130%; }
+h2 { font-size: 115%; }
+h3 { font-size: 110%; }
+
+.m-footer { padding: .3em 2em .3em 2em; min-height: auto; }
+
+.m .align { display: table; margin: 0 auto; }
+
+.m .msg { text-align: center; margin: .5em 1em 1em 1em; }
+.m .msg > div { padding: .5em 1em; display: table; background-color: #EEF; border-radius: 5px; margin: 0 auto; }
+.m .msg .ok { color: green; }
+.m .msg .err { color: red; }
+.m .msg .b { color: inherit; }
+
+.m table.main-data { margin: 0 auto; }
+.m table .c-btn { text-align: right; }
+.m table .c-btn button { text-align: right; font-size: 100%; margin-top: .5em; padding: .1em 1em; }

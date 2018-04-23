@@ -1,0 +1,4 @@
+.m-body { max-width: 480px; min-width: 100%; }
+.m-header .fast { float: none; margin-top: inherit; margin-bottom: inherit; }
+.m-header .logo .text { margin-left: 0; }
+.m-header .fast-cont { text-align: left; }

@@ -1,0 +1,13 @@
+@id		log		path	title
+1	*	index.htm	Видео-проекты
+2	1.2	mail.htm	Отправить почту
+3	1.3	params.htm	Настройки
+4	1.4	report.htm	Отчет
+5	1.5	login.htm	Вход
+6	1.6	fm.htm	Файловый менеджер
+7	1.7	report.mail.htm	Отчет
+8	1.8	report.create.htm	Отчет
+9	1.9		Тестирование эл. почты	content=><!---test_email()--->
+10	1.10		Результат отправки почты	content=><!---mail_page_res()--->
+11	1.11		Отчет	content=><!---report_proj_load(1)--->	status=>281	dst_path=>report.proj.htm
+12	1.12		Отчет	content=><!---report_mail_load(1)--->	status=>281	dst_path=>report.mail.htm

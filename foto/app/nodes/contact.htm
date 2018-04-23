@@ -1,0 +1,29 @@
+<!--- title=Контакты --->
+<!--- keywords=Контакты --->
+<!--- description=Контакты --->
+
+<style>
+
+	.m .address { margin: 1em 0; }
+	.m .map { margin: 1.5em 0; }
+	
+</style>
+
+<div class="m">
+
+	<h1>Контакты</h1>
+
+	<div class="address">
+		<!---COM.NAME---><br />
+		Электронная почта: <!---EMAIL---><br />
+		Телефон: <!---TEL---><br />
+		<!---COM.ADDRESS--->
+	</div>
+	
+	<div class="map">
+		<script type="text/javascript" src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU"></script>
+		<script type="text/javascript">ymaps.ready(function() {var map = new ymaps.Map("ymaps-map-container", {center: [%COM.GPS.CENTER%], zoom: 15, type: "yandex#map"}, {geoObjectHint: false});map.controls.add("zoomControl").add("mapTools").add(new ymaps.control.TypeSelector(["yandex#map", "yandex#satellite", "yandex#hybrid", "yandex#publicMap"]));map.geoObjects.add(new ymaps.Placemark([%COM.GPS.MARK%], {balloonContent: ""}, {preset: "twirl#lightblueDotIcon"}));});</script>
+		<div id="ymaps-map-container" style="width: 80%; height: 450px;"></div>
+	</div>
+
+</div>

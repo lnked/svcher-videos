@@ -1,0 +1,62 @@
+<!--- title=Отправка электронного письма --->
+<!--- keywords=email, отправка --->
+<!--- description=Отправка электронного письма --->
+
+<style>
+
+	.m table { border: none; }
+	.m table td { border: none; }
+		
+</style>
+
+<!---mail_page()--->
+
+<div class="m">
+
+	<div class="align">	
+
+		<h1>Отправка электронного письма</h1>
+		
+		<div class="msg"><!---msg---></div>
+		
+		<form method="post" action="<!---form.action--->">
+		
+			<input name="<!---PM.ID--->" value="10" type="hidden" />
+			<input name="<!---PM.ACT--->" value="<!---PM.ACT.VAL--->" type="hidden" />
+			<input name="<!---PM.STEP--->" value="<!---PM.STEP.VAL--->" type="hidden" />			
+			<input name="proj" value="<!---proj.val--->" type="hidden" />
+		
+			<table class="main-data">
+				<tr><td>ФИО</td><td><input name="fam" type="text" value="<!---pm.fam.val--->" /></td></tr>		
+				<tr><td>Телефон</td><td><input name="tel" type="text" value="<!---pm.tel.val--->" /></td></tr>
+				<tr><td>Эл. адрес</td><td><input name="email" type="text" value="<!---pm.email.val--->" /></td></tr>
+				<tr><td colspan="2" class="c-btn"><button onclick="send_mail(); return false;">Отправить</button></td></tr>
+			</table>
+			
+		</form>
+	
+	</div>
+	
+</div>
+
+<script>
+
+	function send_mail()
+	{
+		var data = {}, url = window.location.href;
+		
+		//data['<!---PM.ID--->'] = '<!---pm.test.mail--->';
+		//data['rt'] = 1;
+		
+		$('input[type!="submit"]').each(function(){
+		
+			data[this.name] = this.value;
+		
+		});
+		
+		data['rt'] = 1;
+		
+		dlg({ url: url, data: data, title: 'Отправка электронного письма' }); 
+	}
+
+</script>

@@ -1,0 +1,187 @@
+<!--- title=Видео сервис --->
+<!--- keywords=видео, сервис --->
+<!--- description=Видео сервис --->
+
+<style>
+
+	.m .vu { height: 35em; }
+	.m img.vu { max-width: 100%; }
+	.m .lp { float: left; width: 80%; margin: 0; padding: 0; }
+	.m .rp { float: left; width: 20%; margin: 0; padding: 0; }
+	.m .pad { margin: 1em; }
+	.m .panel { height: 35em; overflow-y: auto; }
+	.m .panel img { width: 80%; }
+	.m .panel .video-unit { padding: 1em; cursor: pointer; }
+	.m .panel .select { background-color: #EEF; }
+	.m .title { text-align: center; font-size: 90%; }	
+	.m .cont { display: table; margin: 0 auto; }	
+	.m .video-nav { padding: 1em 0; text-align: right; }
+	.m .video-nav button { font-size: 110%; }
+	.m .err { color: green; font-size: 110%; }
+
+</style>
+
+<script>
+
+	var play_period = 10, play_time = 0, play_step = 5, str_period = '<!---play.period--->';
+	
+	if(Number(str_period) > 1)
+		play_period = Number(str_period);
+	
+	function init_video(p, f)
+	{
+		var video, gif;
+		
+		$('input[name="proj"]').val(f);
+		
+		if(f && f.length)
+		{
+			gif = (f.lastIndexOf('.gif') == (f.length - 4));
+			
+			if(gif)
+				video = '<img class="vu" src="' + f + '" />';
+			else
+			{
+				video = '<video class="vu" controls="controls" poster="' + p + '" onended="video_cont(this);" >';
+				video += '<source src="' + f + '" >';
+				video += 'Тег video не поддерживается вашим браузером. <a href="' + f + '">Скачайте видео</a>';
+				video += '</video>';			
+				$('.video').empty().append(video);
+			}
+			
+			$('.video').empty().append(video);
+			$('.video-nav').show();
+
+			if(!gif)
+				video_play();
+		}
+		else
+		{
+			var href = $('a#settings').prop('href');
+			
+			if(!href)
+				href = '';
+			
+			var msg = 'Нет файлов для просмотра. Необходимо проверить ' + (href.length ? '<a href="' + href + '">' : '') + 'настройки' + (href.length ? '</a>' : '');
+			
+			msg = '<p class="err">' + msg + '</p>'
+			
+			$('.video').empty().append(msg);
+			$('.video-nav').hide();
+		}
+	}
+	
+	function unit(el)
+	{
+		var p = $(el).attr('dp');
+		var f = $(el).attr('df');
+		
+		$('.panel .select').removeClass('select');
+		$(el).addClass('select');
+		
+		init_video(p, f);
+	}
+	
+	function prep_units()
+	{
+		if(!$('.panel .select').length)
+			unit($('.video-unit').first());
+		$('.video-unit').on('click', function(){ unit(this); });
+	}
+	
+	function play_one_step()
+	{
+		play_time += play_step;
+		
+		if(is_gif() && play_time >= play_period)
+		{
+			play_time = 0;
+			next_project();
+		}
+	}
+	
+	function video_cont(el_in)
+	{
+		if(play_time < play_period)
+			$(el_in).get(0).play();
+		else
+		{
+			//play_time = 0;
+			next_project();
+		}
+	}
+	
+	function video_play()
+	{
+		play_time = 0;
+		$('video').get(0).play();
+	}
+		
+	function next_project()
+	{
+		var ar = $('.video-unit'), i, p;
+		
+		for(i = 0; i < ar.length; i ++)
+			if($(ar[i]).hasClass('select'))
+			{
+				p = (i + 1) < ar.length ? i + 1 : 0;
+				unit(ar[p]);
+				break;
+			}
+	}
+	
+	function is_gif()
+	{
+		var p = $('input[name="proj"]').val();
+		return (p.lastIndexOf('.gif') == (p.length - 4));
+	}
+	
+	function startf()
+	{
+		unit($('.video-unit').first());
+		prep_units();
+		
+		window.setInterval(function(){ play_one_step(); }, play_step*1000);
+		
+		/*
+		var wh = $(window).height();
+		var fh = $('.m-footer').height();		
+		//bh = wh - fh - 50;
+		$('.m .cont').css('height', bh + 'px');
+		//$('.m .panel').css('height', bh + 'px');
+		*/
+	}
+
+</script>
+
+<!---user_page()--->
+
+<div class="m">
+
+	<div class="lp center">
+		<div class="pad">
+			<div class="cont">
+				<div class="video">Список файлов пуст</div>
+				<div class="video-nav">
+					<form method="post" action="<!---form.action--->">		
+						<input name="<!---PM.ID--->" value="<!---PM.MAIL--->" type="hidden" />
+						<input name="proj" value="<!---proj.val--->" type="hidden" />			
+						<button class>Отправить</button>				
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="rp">
+		<div class="pad">
+			<div class="panel" part_id="projects" part_pos="2">
+				<div></div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="clear"></div>
+	
+</div>
+

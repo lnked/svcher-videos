@@ -1,0 +1,42 @@
+<!--- title=Вход --->
+<!--- keywords=Вход --->
+<!--- description=Вход --->
+
+<style>
+
+	.dlg { display: table; margin: 0 auto; padding: 0; background-color: #FAFAFA; }
+	.dlg .dlg-title { padding: .2em .5em;  border-radius: 5px 5px 0 0; border-bottom: solid 1px #CCC; background-color: #0078d7; font-weight: bold; color: #FFF; border-bottom: solid 1px #AAA; }
+	.dlg .dlg-body { padding: 1em; }
+	.dlg .dlg-nav { padding: .5em 1em; text-align: right; border-radius: 0 0 5px 5px; border-top: solid 1px #CCC; background-color: #FFF; }
+	.dlg input { padding: .1em .5em; width: 8em; }
+
+</style>
+
+<!---login_page()--->
+
+<div class="m">
+
+	<div class="msg"><!---msg---></div>
+
+	<div class="dlg">		
+		<form method="post" action="<!---form.action--->">		
+			<div class="dlg-title">Вход</div>
+			<div class="dlg-body">
+					<input name="<!---PM.ID--->" value="<!---PM.LOGIN--->" type="hidden" />
+					<input name="<!---PM.ACT--->" value="<!---PM.ACT.VAL--->" type="hidden" />
+					<input name="<!---PM.STEP--->" value="<!---PM.STEP.VAL--->" type="hidden" />
+					<table>
+						<tr><td>Имя</td><td><input name="p1" type="text" value="<!---pm.p1.val--->" /></td></tr>
+						<tr><td>Пароль</td><td><input name="p2" type="password" value="<!---pm.p2.val--->" /></td></tr>
+					</table>
+			</div>
+			<div class="dlg-nav">
+				<button>Ok</button>
+			</div>
+		</form>		
+	</div>
+		
+</div>
+
+
+
