@@ -176,7 +176,7 @@
     function formHandler(form, response) {
     	console.log(response);
 
-        if (response.status)
+        if (response && response.hasOwnProperty('status') && response.status)
         {
         	if (response.hasOwnProperty('redirect_url'))
             {

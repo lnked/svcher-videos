@@ -61,9 +61,32 @@ class App
 
 	private function extractData($data = array())
 	{
-		if (!empty($data['change']))
+		$start = 0;
+		$end = 0;
+
+		if ($data['start'])
 		{
-			$dataArray = Q("SELECT `name`, `email`, `phone`, `session` FROM `statistics` WHERE `id` IN (?li)", [
+			$start = strtotime($data['start']);
+		}
+
+		if ($data['end'])
+		{
+			$end = strtotime($data['end']);
+		}
+
+		if (!empty($data['change']) || $start > 0 || $end > 0)
+		{
+			$where = '';
+
+			if ($start > 0) {
+				$where .= ' AND `datetime` >= '. $start .' ';
+			}
+
+			if ($end > 0) {
+				$where .= ' AND `datetime` <= '. $end .' ';
+			}
+
+			$dataArray = Q("SELECT `name`, `email`, `phone`, `session` FROM `statistics` WHERE `id` IN (?li) ". $where ." ", [
 				$data['change']
 			])->all();
 

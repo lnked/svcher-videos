@@ -140,6 +140,33 @@ function makePreview($filename, $pathname)
     return str_replace(PATH_ROOT, '', $preview);
 }
 
+function checkThisEmail($email = '')
+{
+    return checkEmail($email);
+    // exit("E-mail: ".$email." - ".($alter->execute($email)?'существует':'не существует'));
+    $alter = new CheckMail();
+}
+
+function checkEmail($email)
+{
+    if (!preg_match("/^[\._a-zA-Z0-9-]+@[\.a-zA-Z0-9-]+\.[a-z]{2,6}$/i", $email)) return false;
+    list($username, $domain) = explode("@", $email);
+
+    if (@getmxrr($domain, $MXHost))
+    {
+        return true;
+    }
+    else
+    {
+        $f = @fsockopen($domain, 25, $errno, $errstr, 30);
+        if ($f)
+        {
+            fclose($f);
+            return 0;
+        } else return false;
+    }
+}
+
 function elvis($first = '', $second = '')
 {
     return $first ?: $second;

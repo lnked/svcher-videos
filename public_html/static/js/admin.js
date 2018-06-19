@@ -4,6 +4,15 @@
 	//     return confirm("Закрыть?");
 	// });
 
+	$('.datepicker').datepicker({
+		language: 'ru'
+	});
+
+	$('.input-daterange').datepicker({
+		language: 'ru',
+		todayHighlight: true
+	});
+
 	$buttonRemove = $('#button-remove');
 
 	$('body').on('change', '.j-change-all', function() {

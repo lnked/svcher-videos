@@ -8,6 +8,10 @@
 	<link rel="stylesheet" href="/static/css/base.css">
 	<link rel="stylesheet" href="/static/css/admin.css">
 	<link rel="stylesheet" href="/static/css/colorpicker.css" />
+	<link rel="stylesheet" href="/static/vendors/calendar/bootstrap.min.css" />
+	<link rel="stylesheet" href="/static/vendors/calendar/bootstrap-datepicker.min.css" />
+	<!-- <link rel="stylesheet" href="/static/vendors/calendar/bootstrap-datepicker3.min.css" /> -->
+	<!-- <link rel="stylesheet" href="/static/vendors/calendar/bootstrap-datepicker3.standalone.min.css" /> -->
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
@@ -232,7 +236,7 @@
 				<form action="" method="POST">
 					<input type="hidden" name="action" value="extract-data">
 
-					<table>
+					<table class="table">
 						<colgroup>
 							<col width="40">
 							<col width="40">
@@ -278,8 +282,16 @@
 						</tbody>
 	       			</table>
 
-	       			<button type="submit" class="button-submit">Выгрузить</button>
-					<button type="button" class="button-remove" id="button-remove">Удалить выбранные</button>
+					<div class="flex">
+						<div class="input-daterange" id="datepicker">
+							<input name="start" class="input-small" name="start" />
+							<span class="add-on">до</span>
+							<input name="end" class="input-small" name="end" />
+						</div>
+
+						<button type="submit" class="button-submit">Выгрузить</button>
+						<button type="button" class="button-remove" id="button-remove">Удалить выбранные</button>
+					</div>
 	       		</form>
 				<?php endif; ?>
 	        </main>
@@ -291,6 +303,8 @@
 
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/colorpicker.js"></script>
+<script src="/static/vendors/calendar/bootstrap-datepicker.min.js"></script>
+<script src="/static/vendors/calendar/bootstrap-datepicker.ru.min.js"></script>
 <script src="/static/js/admin.js"></script>
 
 </body>

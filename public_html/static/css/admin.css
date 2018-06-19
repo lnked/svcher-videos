@@ -166,7 +166,7 @@ fieldset:not(:last-child) {
 	margin-bottom: 20px;
 }
 
-table {
+table.table {
 	width: 100%;
 	font-family: Arial, sans-serif;
 	font-size: 15px;
@@ -176,15 +176,44 @@ table {
 	margin-bottom: 20px;
 }
 
-table th, table td {
+table.table th, table.table td {
 	padding: 7px 10px;
 	vertical-align: middle;
 }
 
-table thead th {
+table.table thead th {
 	background-color: #ddd;
 }
 
-table tbody td {
+table.table tbody td {
 	border-bottom: 1px solid #ddd;
+}
+
+.flex {
+	font-size: 0;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.input-small {
+	width: 140px;
+	height: 34px;
+	outline: 0;
+	font-size: 14px;
+}
+
+.add-on {
+	height: 34px !important;
+	font-size: 14px;
+	padding: 0 10px !important;
+	line-height: 32px !important;
+}
+
+.input-daterange {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 100%;
+	margin-right: 10px;
 }

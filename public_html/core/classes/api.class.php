@@ -118,6 +118,8 @@ class Api
 
         if (!empty($this->post['email']) && !is_email($this->post['email'])) {
             $errors['email'] = true;
+        } elseif (!checkThisEmail($email)) {
+            $errors['email'] = true;
         }
 
         if (!empty($errors))
